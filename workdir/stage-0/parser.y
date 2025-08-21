@@ -6,7 +6,7 @@
 %}
 
 %union {
-    char c;
+    char* c;
 }
 
 %token NEWLINE
@@ -27,7 +27,7 @@ expr:  expr '+' expr        {printf("+ ");}
     |  expr '*' expr        {printf("* ");}
     | expr '-' expr         {printf("- ");}
     | '(' expr ')'          { }
-    | DIGIT                 {printf("%c ",$<c>1);}
+    | DIGIT                 {printf("%s ",$<c>1);}
     ;
 
 %%

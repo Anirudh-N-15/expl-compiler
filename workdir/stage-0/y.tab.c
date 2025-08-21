@@ -135,7 +135,7 @@ union YYSTYPE
 {
 #line 8 "parser.y"
 
-    char c;
+    char* c;
 
 #line 141 "y.tab.c"
 
@@ -1339,7 +1339,7 @@ yyreduce:
 
   case 7:
 #line 30 "parser.y"
-                            {printf("%c ",(yyvsp[0].c));}
+                            {printf("%s ",(yyvsp[0].c));}
 #line 1344 "y.tab.c"
     break;
 

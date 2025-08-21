@@ -63,7 +63,7 @@ union YYSTYPE
 {
 #line 8 "parser.y"
 
-    char c;
+    char* c;
 
 #line 69 "y.tab.h"
 

@@ -7,8 +7,8 @@
 
 %%
 
-[a-zA-Z]      {
-                yylval.c = (*yytext);
+[a-zA-Z]+      {
+                yylval.c = (yytext);
                 return DIGIT ;
             }
 "+"             return *yytext ;
