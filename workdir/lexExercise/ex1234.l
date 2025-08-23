@@ -18,7 +18,7 @@ float {digit}+"."{digit}+
 word [a-zA-Z]+            
 three_ch_w [A][a-zA-Z]{2}
 single_line "//".*
-multi_line "/\\*[^*]*\\*+(?:[^*]*\\*+)*+/"
+multi_line "/*"([^*]|\*+[^/])*\*+"/"
 
 %%
 
