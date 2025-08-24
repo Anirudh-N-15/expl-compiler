@@ -9,7 +9,7 @@
 
 [a-zA-Z]+      {
                 yylval.c = (yytext);
-                return DIGIT ;
+                return STR ;
             }
 "+"             return *yytext ;
 "*"             return *yytext ;

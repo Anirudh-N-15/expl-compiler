@@ -10,7 +10,7 @@
 }
 
 %token NEWLINE
-%token DIGIT
+%token STR
 
 %left '+' '-'
 %left '*' '/'
@@ -26,8 +26,9 @@ start   : expr NEWLINE  {
 expr:  expr '+' expr        {printf("+ ");}
     |  expr '*' expr        {printf("* ");}
     | expr '-' expr         {printf("- ");}
+    | expr '/' expr         {printf("/ ");}
     | '(' expr ')'          { }
-    | DIGIT                 {printf("%s ",$<c>1);}
+    | STR                   {printf("%s ",$<c>1);}
     ;
 
 %%
