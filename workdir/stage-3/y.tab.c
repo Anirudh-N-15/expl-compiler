@@ -565,9 +565,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    33,    33,    39,    45,    46,    49,    50,    51,    52,
-      53,    56,    60,    64,    70,    73,    76,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91
+       0,    33,    33,    46,    52,    53,    56,    57,    58,    59,
+      60,    63,    67,    71,    77,    80,    83,    86,    87,    88,
+      89,    90,    91,    92,    93,    94,    95,    96,    97,    98
 };
 #endif
 
@@ -1419,185 +1419,192 @@ yyreduce:
                                                     //finalOutput($2, output);
                                                     evaluate((yyvsp[-2].node));
                                                     printf("\n");
-                                                    inorder((yyvsp[-2].node));
+                                                    //inorder($2);
+                                                    output = fopen("output.xsm","w");
+                                                    auxFunctions(output,ENTRY_CODE,-1,-1);
+                                                    codeGen((yyvsp[-2].node),output);
+                                                    auxFunctions(output,EXIT_CODE,-1,-1);
+                                                    fclose(output);
+                                                    exit(0);
+
                                                 }
-#line 1425 "y.tab.c"
+#line 1432 "y.tab.c"
     break;
 
   case 3:
-#line 39 "exptree.y"
+#line 46 "exptree.y"
                                                 {
                                                     printf("\n");
                                                     exit(0);
                                                 }
-#line 1434 "y.tab.c"
+#line 1441 "y.tab.c"
     break;
 
   case 4:
-#line 45 "exptree.y"
+#line 52 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,NO_TYPE,NULL,CONNECT_NODE,(yyvsp[-1].node),(yyvsp[0].node)); }
-#line 1440 "y.tab.c"
+#line 1447 "y.tab.c"
     break;
 
   case 5:
-#line 46 "exptree.y"
+#line 53 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1446 "y.tab.c"
+#line 1453 "y.tab.c"
     break;
 
   case 6:
-#line 49 "exptree.y"
+#line 56 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1452 "y.tab.c"
+#line 1459 "y.tab.c"
     break;
 
   case 7:
-#line 50 "exptree.y"
+#line 57 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1458 "y.tab.c"
+#line 1465 "y.tab.c"
     break;
 
   case 8:
-#line 51 "exptree.y"
+#line 58 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1464 "y.tab.c"
+#line 1471 "y.tab.c"
     break;
 
   case 9:
-#line 52 "exptree.y"
+#line 59 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1470 "y.tab.c"
+#line 1477 "y.tab.c"
     break;
 
   case 10:
-#line 53 "exptree.y"
+#line 60 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1476 "y.tab.c"
+#line 1483 "y.tab.c"
     break;
 
   case 11:
-#line 56 "exptree.y"
+#line 63 "exptree.y"
                                                                                 {   
                                                                                     struct tnode * temp = createTreeNode(NO_VAL,NO_TYPE,NULL,ELSE_NODE,(yyvsp[-4].node),(yyvsp[-2].node));
                                                                                     (yyval.node) = createTreeNode(NO_VAL,NO_TYPE,NULL,IF_NODE,(yyvsp[-7].node),temp);
                                                                                 }
-#line 1485 "y.tab.c"
+#line 1492 "y.tab.c"
     break;
 
   case 12:
-#line 60 "exptree.y"
+#line 67 "exptree.y"
                                                                                 {   
                                                                                     (yyval.node) = createTreeNode(NO_VAL,NO_TYPE,NULL,IF_NODE,(yyvsp[-5].node),(yyvsp[-2].node));
                                                                                 }
-#line 1493 "y.tab.c"
+#line 1500 "y.tab.c"
     break;
 
   case 13:
-#line 64 "exptree.y"
+#line 71 "exptree.y"
                                                                                 {
                                                                                     (yyval.node) = createTreeNode(NO_VAL,NO_TYPE,NULL,WHILE_NODE,(yyvsp[-5].node),(yyvsp[-2].node));
                                                                                 }
-#line 1501 "y.tab.c"
+#line 1508 "y.tab.c"
     break;
 
   case 14:
-#line 70 "exptree.y"
+#line 77 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,NO_TYPE,NULL,READ_NODE,(yyvsp[-2].node),NULL) ;}
-#line 1507 "y.tab.c"
+#line 1514 "y.tab.c"
     break;
 
   case 15:
-#line 73 "exptree.y"
+#line 80 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,NO_TYPE,NULL,WRITE_NODE,(yyvsp[-2].node),NULL) ;}
-#line 1513 "y.tab.c"
+#line 1520 "y.tab.c"
     break;
 
   case 16:
-#line 76 "exptree.y"
+#line 83 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,NO_TYPE,NULL,ASSIGN_NODE,(yyvsp[-3].node), (yyvsp[-1].node)) ;}
-#line 1519 "y.tab.c"
+#line 1526 "y.tab.c"
     break;
 
   case 17:
-#line 79 "exptree.y"
+#line 86 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,INT_TYPE,NULL,ADD_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1525 "y.tab.c"
+#line 1532 "y.tab.c"
     break;
 
   case 18:
-#line 80 "exptree.y"
+#line 87 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,INT_TYPE,NULL,MINUS_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1531 "y.tab.c"
+#line 1538 "y.tab.c"
     break;
 
   case 19:
-#line 81 "exptree.y"
+#line 88 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,INT_TYPE,NULL,MUL_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1537 "y.tab.c"
+#line 1544 "y.tab.c"
     break;
 
   case 20:
-#line 82 "exptree.y"
+#line 89 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,INT_TYPE,NULL,DIV_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1543 "y.tab.c"
+#line 1550 "y.tab.c"
     break;
 
   case 21:
-#line 83 "exptree.y"
+#line 90 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,BOOL_TYPE,NULL,NE_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1549 "y.tab.c"
+#line 1556 "y.tab.c"
     break;
 
   case 22:
-#line 84 "exptree.y"
+#line 91 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,BOOL_TYPE,NULL,EQ_NODE,(yyvsp[-2].node),(yyvsp[0].node)); }
-#line 1555 "y.tab.c"
+#line 1562 "y.tab.c"
     break;
 
   case 23:
-#line 85 "exptree.y"
+#line 92 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,BOOL_TYPE,NULL,LT_NODE,(yyvsp[-2].node),(yyvsp[0].node)); }
-#line 1561 "y.tab.c"
+#line 1568 "y.tab.c"
     break;
 
   case 24:
-#line 86 "exptree.y"
+#line 93 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,BOOL_TYPE,NULL,LE_NODE,(yyvsp[-2].node),(yyvsp[0].node)); }
-#line 1567 "y.tab.c"
+#line 1574 "y.tab.c"
     break;
 
   case 25:
-#line 87 "exptree.y"
+#line 94 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,BOOL_TYPE,NULL,GT_NODE,(yyvsp[-2].node),(yyvsp[0].node)); }
-#line 1573 "y.tab.c"
+#line 1580 "y.tab.c"
     break;
 
   case 26:
-#line 88 "exptree.y"
+#line 95 "exptree.y"
                                                 {   (yyval.node) = createTreeNode(NO_VAL,BOOL_TYPE,NULL,GE_NODE,(yyvsp[-2].node),(yyvsp[0].node)); }
-#line 1579 "y.tab.c"
+#line 1586 "y.tab.c"
     break;
 
   case 27:
-#line 89 "exptree.y"
+#line 96 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[-1].node) ;}
-#line 1585 "y.tab.c"
+#line 1592 "y.tab.c"
     break;
 
   case 28:
-#line 90 "exptree.y"
+#line 97 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1591 "y.tab.c"
+#line 1598 "y.tab.c"
     break;
 
   case 29:
-#line 91 "exptree.y"
+#line 98 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1597 "y.tab.c"
+#line 1604 "y.tab.c"
     break;
 
 
-#line 1601 "y.tab.c"
+#line 1608 "y.tab.c"
 
       default: break;
     }
@@ -1829,7 +1836,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 94 "exptree.y"
+#line 101 "exptree.y"
 
 
 extern FILE * yyin ;

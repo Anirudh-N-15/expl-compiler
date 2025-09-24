@@ -34,7 +34,14 @@ program     :   BEG stmtList END SEMICOLON      {
                                                     //finalOutput($2, output);
                                                     evaluate($2);
                                                     printf("\n");
-                                                    inorder($2);
+                                                    //inorder($2);
+                                                    output = fopen("output.xsm","w");
+                                                    auxFunctions(output,ENTRY_CODE,-1,-1);
+                                                    codeGen($2,output);
+                                                    auxFunctions(output,EXIT_CODE,-1,-1);
+                                                    fclose(output);
+                                                    exit(0);
+
                                                 }
             |   BEG END SEMICOLON               {
                                                     printf("\n");

@@ -2,6 +2,10 @@
 #define exptree_h
 
 #define NO_VAL -1
+#define ENTRY_CODE 0
+#define EXIT_CODE 1
+#define READ_CODE 2
+#define WRITE_CODE 3
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,7 +34,6 @@ enum nodetype {
     NE_NODE       = 19
 };
 
-
 enum Datatype {
     INT_TYPE    = 0,
     BOOL_TYPE   = 1,
@@ -48,8 +51,17 @@ struct tnode {
 
 struct tnode * createTreeNode(int val, int type, char* varname, int nodetype, struct tnode *l, struct tnode *r);
 
-int checkOp(int nodeType);
+int checkOperator(int nodeType);
 int evaluate(struct tnode * root);
 void inorder(struct tnode * root);
+
+static int nums[26] = {0} ;
+
+int getReg();
+void freeReg();
+int codeGen(struct tnode * root, FILE * op);
+int getLabel() ;
+
+void auxFunctions(FILE * op, int codePrint, int reg1,int reg2);
 
 #endif
