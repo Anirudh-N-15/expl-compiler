@@ -7,8 +7,8 @@
     int number;
 %}
 
-numbers  [0-9]+
-id      [a-zA-Z]
+numbers     [0-9]+
+id          [a-zA-Z]
 
 %%
 
@@ -30,6 +30,10 @@ id      [a-zA-Z]
 "then"      return THEN ;
 "else"      return ELSE ;
 "while"     return WHILE ;
+"continue"  return CONTINUE ;
+"break"     return BREAK ;
+"repeat"    return REPEAT ;
+"until"     return UNTIL ;
 "endif"     return ENDIF ;
 "endwhile"  return ENDWHILE ;
 "do"        return DO ;

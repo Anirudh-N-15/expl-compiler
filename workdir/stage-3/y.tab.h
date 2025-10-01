@@ -65,15 +65,19 @@ extern int yydebug;
     ELSE = 271,
     ENDIF = 272,
     ENDWHILE = 273,
-    NE = 274,
-    EQ = 275,
-    GT = 276,
-    LT = 277,
-    GE = 278,
-    LE = 279,
-    DO = 280,
-    NUM = 281,
-    ID = 282
+    CONTINUE = 274,
+    BREAK = 275,
+    REPEAT = 276,
+    UNTIL = 277,
+    NE = 278,
+    EQ = 279,
+    GT = 280,
+    LT = 281,
+    GE = 282,
+    LE = 283,
+    DO = 284,
+    NUM = 285,
+    ID = 286
   };
 #endif
 /* Tokens.  */
@@ -93,15 +97,19 @@ extern int yydebug;
 #define ELSE 271
 #define ENDIF 272
 #define ENDWHILE 273
-#define NE 274
-#define EQ 275
-#define GT 276
-#define LT 277
-#define GE 278
-#define LE 279
-#define DO 280
-#define NUM 281
-#define ID 282
+#define CONTINUE 274
+#define BREAK 275
+#define REPEAT 276
+#define UNTIL 277
+#define NE 278
+#define EQ 279
+#define GT 280
+#define LT 281
+#define GE 282
+#define LE 283
+#define DO 284
+#define NUM 285
+#define ID 286
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -111,7 +119,7 @@ union YYSTYPE
 
     struct tnode * node;
 
-#line 115 "y.tab.h"
+#line 123 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

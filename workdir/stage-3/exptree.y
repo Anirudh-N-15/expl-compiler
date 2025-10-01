@@ -15,13 +15,14 @@
 
 %token PLUS MINUS MUL DIV 
 %token BEG END READ WRITE ASSIGN SEMICOLON 
-%token IF THEN WHILE ELSE ENDIF ENDWHILE 
+%token IF THEN WHILE ELSE ENDIF ENDWHILE CONTINUE BREAK REPEAT UNTIL
 %token NE EQ GT LT GE LE DO 
 
 %token <node> NUM ID
 
 %type <node> expr assignStmt opStmt ipStmt 
-%type <node> stmt stmtList ifStmt whileStmt
+%type <node> stmt stmtList ifStmt whileStmt 
+%type <node> doWhileStmt repeatStmt
 
 
 %left NE EQ GT LT GE LE
@@ -31,7 +32,6 @@
 %%
 
 program     :   BEG stmtList END SEMICOLON      {
-                                                    //finalOutput($2, output);
                                                     evaluate($2);
                                                     printf("\n");
                                                     //inorder($2);
@@ -58,6 +58,10 @@ stmt        :   ipStmt                          {   $$ = $1 ;}
             |   assignStmt                      {   $$ = $1 ;}
             |   ifStmt                          {   $$ = $1 ;}
             |   whileStmt                       {   $$ = $1 ;}
+            |   doWhileStmt                     {   $$ = $1 ;}
+            |   repeatStmt                      {   $$ = $1 ;}
+            |   BREAK SEMICOLON                 {   $$ = createTreeNode(NO_VAL, NO_TYPE,NULL,BREAK_NODE,NULL,NULL) ;}
+            |   CONTINUE SEMICOLON              {   $$ = createTreeNode(NO_VAL, NO_TYPE,NULL,CONTINUE_NODE,NULL,NULL) ;}
             ;
 
 ifStmt      :   IF '(' expr ')' THEN stmtList ELSE stmtList ENDIF SEMICOLON     {   
@@ -68,11 +72,20 @@ ifStmt      :   IF '(' expr ')' THEN stmtList ELSE stmtList ENDIF SEMICOLON     
                                                                                     $$ = createTreeNode(NO_VAL,NO_TYPE,NULL,IF_NODE,$3,$6);
                                                                                 }
             ;
+
 whileStmt   :   WHILE '(' expr ')' DO stmtList ENDWHILE SEMICOLON               {
                                                                                     $$ = createTreeNode(NO_VAL,NO_TYPE,NULL,WHILE_NODE,$3,$6);
                                                                                 }
             ;
 
+doWhileStmt :  DO stmtList WHILE '(' expr ')' SEMICOLON                         {
+                                                                                    $$ = createTreeNode(NO_VAL,NO_TYPE,NULL,DOWHILE_NODE,$5,$2);
+                                                                                }
+            ;
+
+repeatStmt  : REPEAT stmtList UNTIL '(' expr ')' SEMICOLON                      {
+                                                                                    $$ = createTreeNode(NO_VAL,NO_TYPE,NULL,REPEAT_NODE,$5,$2);
+                                                                                }
 
 ipStmt      :   READ '(' ID ')' SEMICOLON       {   $$ = createTreeNode(NO_VAL,NO_TYPE,NULL,READ_NODE,$3,NULL) ;}
             ;

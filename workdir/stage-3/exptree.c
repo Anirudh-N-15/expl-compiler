@@ -1,5 +1,11 @@
 #include "exptree.h"
 
+#define STACK_SIZE 100
+
+int breakStack[STACK_SIZE];
+int continueStack[STACK_SIZE];
+int stackTop = -1;
+
 int maxReg = -1;
 int maxLabel = -1;
 
@@ -30,6 +36,7 @@ struct tnode * createTreeNode(int val, int type, char* varname, int nodetype, st
 
     return temp ;
 }
+
 
 void inorder(struct tnode * root) {
     if(root ) {
@@ -166,34 +173,76 @@ int evaluate(struct tnode * root) {
         }
         case ASSIGN_NODE : {
             nums[root->left->varname[0] - 'a'] = evaluate(root->right) ;
-            return -1;
+            return 0;
         }
 
         case CONNECT_NODE : {
-            evaluate(root->left);
-            evaluate(root->right);
-            return -1;
+            int res = evaluate(root->left);
+            if(res == EVAL_BREAK || res == EVAL_CONTINUE) {
+                return res ;
+            }
+
+            res = evaluate(root->right);
+            if(res == EVAL_BREAK || res == EVAL_CONTINUE) {
+                return res ;
+            }
+            return EVAL_NORMAL;
         }
 
         case IF_NODE : {
             if(evaluate(root->left)) {
                 if(root->right->nodetype == ELSE_NODE) {
-                    evaluate(root->right->left) ;
+                    return evaluate(root->right->left) ;
                 } else {
-                    evaluate(root->right) ;
+                    return evaluate(root->right) ;
                 }
             } else {
                 if(root->right->nodetype == ELSE_NODE) {
-                    evaluate(root->right->right);
+                    return evaluate(root->right->right);
                 } 
             }
             break;
         }
         case WHILE_NODE : {
             while(evaluate(root->left)) {
-                evaluate(root->right) ;
+                int res = evaluate(root->right) ;
+                if(res == EVAL_BREAK) {
+                    break;
+                } else if(res == EVAL_CONTINUE) {
+                    continue;
+                } else if(res != EVAL_NORMAL) {
+                    return res ;
+                }
             } 
+            return EVAL_NORMAL ;
             break ;
+        }
+        case DOWHILE_NODE : {
+            do {
+                evaluate(root->right);
+
+            } while(evaluate(root->left));
+            break;
+        }
+        case REPEAT_NODE : {
+            do {
+                int res = evaluate(root->right);
+                if(res == EVAL_BREAK) {
+                    break;
+                } else if(res == EVAL_CONTINUE) {
+                    continue;
+                } else if(res != EVAL_NORMAL) {
+                    return res ;
+                }
+            } while (!evaluate(root->left));
+            return EVAL_NORMAL ;
+            break; 
+        }
+        case BREAK_NODE : {
+            return EVAL_BREAK ;
+        }
+        case CONTINUE_NODE : {
+            return EVAL_CONTINUE ;
         }
     }
     return 0 ;
@@ -217,6 +266,33 @@ void freeReg() {
         maxReg-- ;
     }
 }
+
+void pushLabel(int breakLabel, int continueLabel) {
+    if(stackTop + 1 >= STACK_SIZE) {
+        perror("Too many nested loops");
+        exit(1);
+    }
+    stackTop++ ;
+    breakStack[stackTop] = breakLabel ;
+    continueStack[stackTop] = continueLabel ;
+}
+
+void popLabel() {
+    if(stackTop < 0) {
+        perror("Popping from empty stack");
+        exit(1);
+    }
+    stackTop-- ;
+}
+
+int getBreakLabel() {
+    return breakStack[stackTop];
+}
+
+int getContinueLabel() {
+    return continueStack[stackTop];
+}
+
 
 void auxFunctions(FILE * op, int codePrint, int reg1, int reg2) {
     switch(codePrint) {
@@ -436,16 +512,68 @@ int codeGen(struct tnode * root, FILE * op) {
         case WHILE_NODE : {
             label1 = getLabel();
             label2 = getLabel();
+            
+            pushLabel(label2,label1); //Since breakLabel->label2 and continueLabel->label1
 
             fprintf(op, "L%d:\n",label1);
             r1 = codeGen(root->left,op);
             fprintf(op, "JZ R%d, L%d\n", r1, label2);
             freeReg();
-            r1 = codeGen(root->right,op);
+
+            codeGen(root->right,op);
+
             fprintf(op, "JMP L%d\n", label1);
             fprintf(op, "L%d:\n", label2);
-            freeReg();
+            
+            popLabel();
+
             return -1 ;
+        }
+        case DOWHILE_NODE : {
+            label1 = getLabel();
+            label2 = getLabel();
+
+            pushLabel(label2,label1);
+
+            fprintf(op, "L%d:\n", label1) ;
+            r1 = codeGen(root->right,op);
+            freeReg();
+
+            r1 = codeGen(root->left, op);
+            fprintf(op, "JNZ R%d, L%d\n", r1, label1);
+            fprintf(op, "L%d:\n", label2);
+            freeReg();  
+            
+            popLabel();
+
+            return -1;
+        }
+        case REPEAT_NODE : {
+            label1 = getLabel();
+            label2 = getLabel();
+
+            pushLabel(label2,label1);
+
+            fprintf(op, "L%d:\n", label1) ;
+            r1 = codeGen(root->right,op);
+            freeReg();
+
+            r1 = codeGen(root->left, op);
+            fprintf(op, "JZ R%d, L%d\n", r1, label1);
+            fprintf(op, "L%d:\n", label2);
+            freeReg();
+
+            pushLabel(label2,label1);
+
+            return -1;
+        }
+        case CONTINUE_NODE : {
+            fprintf(op, "JMP L%d\n",getContinueLabel());
+            return -1 ;
+        }   
+        case BREAK_NODE : {
+            fprintf(op, "JMP L%d\n",getBreakLabel());
+            return -1;
         }
     }
 }

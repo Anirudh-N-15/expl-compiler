@@ -1,4 +1,4 @@
 #!/bin/bash
-lex exptree.l
+lex -o exptree_lex.c exptree.l
 yacc -d exptree.y
-gcc lex.yy.c y.tab.c exptree.c
+gcc exptree_lex.c y.tab.c exptree.c -o exptree

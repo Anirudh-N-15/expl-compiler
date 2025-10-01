@@ -1,5 +1,6 @@
+#line 2 "exptree_lex.c"
 
-#line 3 "lex.yy.c"
+#line 4 "exptree_lex.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -497,8 +498,8 @@ char *yytext;
     #include "exptree.h"
 
     int number;
-#line 501 "lex.yy.c"
-#line 502 "lex.yy.c"
+#line 502 "exptree_lex.c"
+#line 503 "exptree_lex.c"
 
 #define INITIAL 0
 
@@ -718,7 +719,7 @@ YY_DECL
 #line 13 "exptree.l"
 
 
-#line 722 "lex.yy.c"
+#line 723 "exptree_lex.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -953,7 +954,7 @@ YY_RULE_SETUP
 #line 57 "exptree.l"
 ECHO;
 	YY_BREAK
-#line 957 "lex.yy.c"
+#line 958 "exptree_lex.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

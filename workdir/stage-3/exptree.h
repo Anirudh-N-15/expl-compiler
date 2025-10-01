@@ -7,6 +7,10 @@
 #define READ_CODE 2
 #define WRITE_CODE 3
 
+#define EVAL_NORMAL 0
+#define EVAL_BREAK -1
+#define EVAL_CONTINUE -2 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -31,7 +35,11 @@ enum nodetype {
     LE_NODE       = 16,
     GT_NODE       = 17,
     GE_NODE       = 18,
-    NE_NODE       = 19
+    NE_NODE       = 19,
+    CONTINUE_NODE = 20,
+    BREAK_NODE    = 21,
+    REPEAT_NODE   = 22,
+    DOWHILE_NODE  = 23
 };
 
 enum Datatype {
@@ -61,6 +69,11 @@ int getReg();
 void freeReg();
 int codeGen(struct tnode * root, FILE * op);
 int getLabel() ;
+
+void pushLabel(int breakLabel,int continueLabel);
+void popLabel();
+int getContinueLabel();
+int getBreakLabel();
 
 void auxFunctions(FILE * op, int codePrint, int reg1,int reg2);
 

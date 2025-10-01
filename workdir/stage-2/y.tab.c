@@ -538,8 +538,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    29,    29,    33,    39,    40,    43,    44,    45,    48,
-      51,    54,    57,    58,    59,    60,    61,    62,    63
+       0,    29,    29,    34,    40,    41,    44,    45,    46,    49,
+      52,    55,    58,    59,    60,    61,    62,    63,    64
 };
 #endif
 
@@ -1353,111 +1353,112 @@ yyreduce:
                                                     {
                                                         finalOutput((yyvsp[-2].node), output);
                                                         evaluator((yyvsp[-2].node));
+                                                        inorder((yyvsp[-2].node));
                                                     }
-#line 1358 "y.tab.c"
+#line 1359 "y.tab.c"
     break;
 
   case 3:
-#line 33 "exptree.y"
+#line 34 "exptree.y"
                                                     {
                                                     printf("\n");
                                                     exit(0);
                                                 }
-#line 1367 "y.tab.c"
+#line 1368 "y.tab.c"
     break;
 
   case 4:
-#line 39 "exptree.y"
+#line 40 "exptree.y"
                                                 {   (yyval.node) = createConnecterNode((yyvsp[-1].node), (yyvsp[0].node)); }
-#line 1373 "y.tab.c"
+#line 1374 "y.tab.c"
     break;
 
   case 5:
-#line 40 "exptree.y"
+#line 41 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1379 "y.tab.c"
+#line 1380 "y.tab.c"
     break;
 
   case 6:
-#line 43 "exptree.y"
+#line 44 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1385 "y.tab.c"
+#line 1386 "y.tab.c"
     break;
 
   case 7:
-#line 44 "exptree.y"
+#line 45 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1391 "y.tab.c"
+#line 1392 "y.tab.c"
     break;
 
   case 8:
-#line 45 "exptree.y"
+#line 46 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1397 "y.tab.c"
+#line 1398 "y.tab.c"
     break;
 
   case 9:
-#line 48 "exptree.y"
+#line 49 "exptree.y"
                                                 {   (yyval.node) = createReadNode((yyvsp[-2].node)) ;}
-#line 1403 "y.tab.c"
+#line 1404 "y.tab.c"
     break;
 
   case 10:
-#line 51 "exptree.y"
+#line 52 "exptree.y"
                                                 {   (yyval.node) = createWriteNode((yyvsp[-2].node)) ;}
-#line 1409 "y.tab.c"
+#line 1410 "y.tab.c"
     break;
 
   case 11:
-#line 54 "exptree.y"
+#line 55 "exptree.y"
                                                {   (yyval.node) = createAssignNode((yyvsp[-3].node), (yyvsp[-1].node)) ;}
-#line 1415 "y.tab.c"
+#line 1416 "y.tab.c"
     break;
 
   case 12:
-#line 57 "exptree.y"
+#line 58 "exptree.y"
                                                 {   (yyval.node) = createOperatorNode(ADD_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1421 "y.tab.c"
+#line 1422 "y.tab.c"
     break;
 
   case 13:
-#line 58 "exptree.y"
+#line 59 "exptree.y"
                                                 {   (yyval.node) = createOperatorNode(MINUS_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1427 "y.tab.c"
+#line 1428 "y.tab.c"
     break;
 
   case 14:
-#line 59 "exptree.y"
+#line 60 "exptree.y"
                                                 {   (yyval.node) = createOperatorNode(MUL_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1433 "y.tab.c"
+#line 1434 "y.tab.c"
     break;
 
   case 15:
-#line 60 "exptree.y"
+#line 61 "exptree.y"
                                                 {   (yyval.node) = createOperatorNode(DIV_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1439 "y.tab.c"
+#line 1440 "y.tab.c"
     break;
 
   case 16:
-#line 61 "exptree.y"
+#line 62 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[-1].node) ;}
-#line 1445 "y.tab.c"
+#line 1446 "y.tab.c"
     break;
 
   case 17:
-#line 62 "exptree.y"
+#line 63 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1451 "y.tab.c"
+#line 1452 "y.tab.c"
     break;
 
   case 18:
-#line 63 "exptree.y"
+#line 64 "exptree.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ;}
-#line 1457 "y.tab.c"
+#line 1458 "y.tab.c"
     break;
 
 
-#line 1461 "y.tab.c"
+#line 1462 "y.tab.c"
 
       default: break;
     }
@@ -1689,7 +1690,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 66 "exptree.y"
+#line 67 "exptree.y"
 
 
 extern FILE * yyin ;

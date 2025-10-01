@@ -282,10 +282,50 @@ void evaluator(struct tnode * root) {
     }
 }
 
-// void inorder(struct tnode * root)  {
-//     if(root) {
-//         inorder(root->left);
-//         printf("%d ",root->nodetype);
-//         inorder(root->right);
-//     }
-// }
+void inorder(struct tnode * root) {
+    if(root ) {
+        inorder(root->left);
+        
+        switch(root->nodetype) {
+            case LEAF_NODE : {
+                if(root->type == INT_TYPE)
+                    printf("%d ",root->val);
+                else 
+                    printf("%c ",root->varname[0]);
+                break;
+            }
+            case READ_NODE : {
+                printf("Read ");
+                break;
+            }
+            case WRITE_NODE : {
+                printf("Write ");
+                break;
+            }
+            case ASSIGN_NODE : {
+                printf("= ");
+                break;
+            }
+            case ADD_NODE : {
+                printf("+ ");
+                break;
+            }
+            case MINUS_NODE : {
+                printf("- ");
+                break;
+            }
+            case MUL_NODE : {
+                printf("* ");
+                break;
+            }
+            case DIV_NODE : {
+                printf("/ ");
+                break;
+            }
+            case CONNECT_NODE : {
+                printf("CONNECT ");
+            }
+        }
+        inorder(root->right);
+    }
+}

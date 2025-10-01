@@ -29,6 +29,7 @@
 program     :   T_BEGIN stmtList T_END SEMICOLON    {
                                                         finalOutput($2, output);
                                                         evaluator($2);
+                                                        inorder($2);
                                                     }
             |   T_BEGIN T_END SEMICOLON             {
                                                     printf("\n");

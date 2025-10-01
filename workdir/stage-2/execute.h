@@ -22,5 +22,6 @@ void exitProg(FILE * op);
 
 int evaluate(struct tnode * root);
 void evaluator(struct tnode * root);
+void inorder(struct tnode * root);
 
 #endif
