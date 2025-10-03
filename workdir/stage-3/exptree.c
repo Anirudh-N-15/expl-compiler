@@ -219,7 +219,14 @@ int evaluate(struct tnode * root) {
         }
         case DOWHILE_NODE : {
             do {
-                evaluate(root->right);
+                int res = evaluate(root->right);
+                if(res == EVAL_BREAK) {
+                    break;
+                } else if(res == EVAL_CONTINUE) {
+                    continue; 
+                } else if(res != EVAL_NORMAL) {
+                    return res ;
+                }
 
             } while(evaluate(root->left));
             break;
