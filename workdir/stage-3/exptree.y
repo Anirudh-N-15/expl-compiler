@@ -27,7 +27,7 @@
 
 %left NE EQ GT LT GE LE
 %left PLUS MINUS 
-%left MUL DIV 
+%left MUL DIV MOD 
 
 %%
 
@@ -65,10 +65,18 @@ stmt        :   ipStmt                          {   $$ = $1 ;}
             ;
 
 ifStmt      :   IF '(' expr ')' THEN stmtList ELSE stmtList ENDIF SEMICOLON     {   
+                                                                                    if($3->type == INT_TYPE) {
+                                                                                        printf("Type Mismatch\n");
+                                                                                        exit(1);
+                                                                                    }
                                                                                     struct tnode * temp = createTreeNode(NO_VAL,NO_TYPE,NULL,ELSE_NODE,$6,$8);
                                                                                     $$ = createTreeNode(NO_VAL,NO_TYPE,NULL,IF_NODE,$3,temp);
                                                                                 }
             |   IF '(' expr ')' THEN stmtList ENDIF SEMICOLON                   {   
+                                                                                    if($3->type== INT_TYPE) {
+                                                                                        printf("Type Mismatch\n");
+                                                                                        exit(1);
+                                                                                    }
                                                                                     $$ = createTreeNode(NO_VAL,NO_TYPE,NULL,IF_NODE,$3,$6);
                                                                                 }
             ;

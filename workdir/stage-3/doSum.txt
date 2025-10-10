@@ -1,18 +1,8 @@
 begin
     a = 1;
-    b = 1;
-    while(a <= 20) do
-        while(b <= 15) do 
-            if(b > 12) then
-                break ;
-            endif;
-            write(b);
-            b = b + 1;
-        endwhile;
-        if(a > 15) then
-            break;
-        endif;
-        write(a);
-        a = a + 1;
-    endwhile;
+    b = 2;
+    if(a < b) then
+        read(1);
+        write(b);
+    endif;
 end;

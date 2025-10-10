@@ -77,7 +77,8 @@ extern int yydebug;
     LE = 283,
     DO = 284,
     NUM = 285,
-    ID = 286
+    ID = 286,
+    MOD = 287
   };
 #endif
 /* Tokens.  */
@@ -110,6 +111,7 @@ extern int yydebug;
 #define DO 284
 #define NUM 285
 #define ID 286
+#define MOD 287
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -119,7 +121,7 @@ union YYSTYPE
 
     struct tnode * node;
 
-#line 123 "y.tab.h"
+#line 125 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
