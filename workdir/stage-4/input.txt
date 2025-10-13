@@ -1,0 +1,18 @@
+decl    
+    str names[3] ;
+    int num;
+enddecl
+begin
+    num = 0;
+    while(num < 3) do 
+        read(names[num]);
+        num = num + 1;
+    endwhile;
+
+    num = 2;
+    while(num >= 0) do 
+        write(names[num]);
+        num = num - 1;
+    endwhile;
+end;
+
