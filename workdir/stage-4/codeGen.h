@@ -14,6 +14,7 @@ static int nums[26] = {0} ;
 int getReg();
 void freeReg();
 
+int getAddress(struct tnode * root,FILE * op);  //Not needed since only helper function in codeGen.c
 int codeGen(struct tnode * root, FILE * op);
 int evaluate(struct tnode * root);
 void inorder(struct tnode * root);

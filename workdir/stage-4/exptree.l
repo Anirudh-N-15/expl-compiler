@@ -66,12 +66,12 @@ id          {letter}({letter}|{digit})*
                 return NUM ;
             }
 
-\"([^\"\\]|\\.)*\"   {
+\"([^\"\\]|\\.)*\"  {
                         char * raw = yytext ;
                         char * s = strdup(raw + 1);
                         s[strlen(s) - 1] = '\0' ;
                         yylval.string = s;
-                        return STR ;
+                        return STR_LITERAL ;
                 
                     }
 

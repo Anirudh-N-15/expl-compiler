@@ -16,7 +16,8 @@ int getLabel() {
 }
 
 int getReg() {
-    if(maxReg < 16) {
+    if(maxReg < 20) {
+        //printf("getReg -> %d\n",maxReg);
        return ++maxReg ;
     } else {
         printf("Out of registers\n");
@@ -26,6 +27,7 @@ int getReg() {
 
 void freeReg() {
     if(maxReg >= 0) {
+        //printf("freeReg -> %d\n",maxReg);
         maxReg-- ;
     } else {
         printf("Error freeing registers\n");
@@ -61,22 +63,38 @@ void popLabel() {
 }
 
 int getAddress(struct tnode * root,FILE * op) {
-    if (!root) { 
-        printf("getAddress called with NULL\n"); exit(1); 
-    }
-
     switch(root->nodetype) {
         case ARR_NODE : { 
             int baseReg = getReg();
-            int baseAddress = root->Gentry->binding ;
             int offsetReg = codeGen(root->left,op);
+            int baseAddress = root->Gentry->binding ;
 
             fprintf(op, "MOV R%d, %d\n",baseReg,baseAddress);
             fprintf(op, "ADD R%d, R%d\n",baseReg,offsetReg );
             freeReg();
             return baseReg ;
         }
+        case MATRIX_NODE : {
+            //The address will lie at baseAddr + (i*colSize + j) ;
 
+            int baseReg = getReg();
+            int rowReg = codeGen(root->left,op);
+            int colReg = codeGen(root->right,op);
+            int tempReg = getReg();
+
+            int baseAddress = root->Gentry->binding ;
+            int colSize = root->Gentry->size2 ;
+
+            fprintf(op, "MOV R%d, %d\n",baseReg,baseAddress);       //Base Address
+            fprintf(op, "MOV R%d, %d\n",tempReg,colSize);            //colSize
+            fprintf(op, "MUL R%d, R%d\n",rowReg,tempReg);            // row = row * colSize 
+            fprintf(op, "ADD R%d, R%d\n",rowReg,colReg);            // row = row + col
+            fprintf(op, "ADD R%d, R%d\n",baseReg,rowReg);           //BaseAddress = BaseAdrress + row
+            freeReg();
+            freeReg();
+            freeReg();
+            return baseReg ;
+        }
         case ID_NODE : {
             int r1 = getReg();
             int address = root->Gentry->binding ;
@@ -88,11 +106,69 @@ int getAddress(struct tnode * root,FILE * op) {
 }
 
 
+int evalExpression(struct tnode * root,FILE * op) {
+    if (!root) { 
+        printf("evalExpression called with NULL\n");
+        exit(1); 
+    }
+
+    switch(root->nodetype) {
+        case ARR_NODE : { 
+            int baseReg = getReg();
+            int offsetReg = codeGen(root->left,op);
+            int baseAddress = root->Gentry->binding ;
+
+            fprintf(op, "MOV R%d, %d\n",baseReg,baseAddress);
+            fprintf(op, "ADD R%d, R%d\n",baseReg,offsetReg );
+            fprintf(op, "MOV R%d, [R%d]\n",baseReg,baseReg);
+            freeReg();
+            return baseReg ;
+        }
+        case MATRIX_NODE : {
+            //The address will lie at baseAddr + (i*colSize + j) ;
+
+            int baseReg = getReg();
+            int rowReg = codeGen(root->left,op);
+            int colReg = codeGen(root->right,op);
+            int tempReg = getReg();
+
+            int baseAddress = root->Gentry->binding ;
+            int colSize = root->Gentry->size2 ;
+
+            fprintf(op, "MOV R%d, %d\n",baseReg,baseAddress);       //Base Address
+            fprintf(op, "MOV R%d, %d\n",tempReg,colSize);            //colSize
+            fprintf(op, "MUL R%d, R%d\n",rowReg,tempReg);            // row = row * colSize 
+            fprintf(op, "ADD R%d, R%d\n",rowReg,colReg);            // row = row + col
+            fprintf(op, "ADD R%d, R%d\n",baseReg,rowReg);           //BaseAddress = BaseAdrress + row
+            fprintf(op, "MOV R%d, [R%d]\n",baseReg,baseReg);
+            freeReg();
+            freeReg();
+            freeReg();
+            return baseReg ;
+        }
+
+        case ID_NODE : {
+            int r1 = getReg();
+            int address = root->Gentry->binding ;
+
+            fprintf(op, "MOV R%d, %d\n",r1,address);
+            fprintf(op, "MOV R%d, [R%d]\n",r1,r1);
+            return r1 ;
+        }
+        case NUM_NODE : {
+            int r1 = getReg();
+            fprintf(op, "MOV R%d, %d\n",r1,root->val);
+            return r1;
+        }
+    }
+}
+
+
 void auxFunctions(FILE * op, int codePrint, int reg1, int reg2) {
     switch(codePrint) {
         case  ENTRY_CODE : {
             fprintf(op, "%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",0,2056,0,0,0,0,0,0);
-            fprintf(op, "MOV SP, 4196\n");
+            fprintf(op, "MOV SP, 4500\n");
             break;
         }
 
@@ -112,11 +188,12 @@ void auxFunctions(FILE * op, int codePrint, int reg1, int reg2) {
             fprintf(op, "PUSH R%d\n",reg1);
             fprintf(op, "MOV R%d, -1\n",reg1);
             fprintf(op, "PUSH R%d\n",reg1);
-            fprintf(op, "MOV R%d, R%d\n",reg1, reg2);
+            fprintf(op, "PUSH R%d\n",reg2);
             fprintf(op, "PUSH R%d\n",reg1);
             fprintf(op, "PUSH R%d\n",reg1);
-            fprintf(op, "PUSH R%d\n",reg1);
+
             fprintf(op, "CALL 0\n");
+
             fprintf(op, "POP R%d\n",reg1);
             fprintf(op, "POP R%d\n",reg1);
             fprintf(op, "POP R%d\n",reg1);
@@ -130,11 +207,12 @@ void auxFunctions(FILE * op, int codePrint, int reg1, int reg2) {
             fprintf(op, "PUSH R%d\n",reg1);
             fprintf(op, "MOV R%d, -2\n",reg1);
             fprintf(op, "PUSH R%d\n",reg1);
-            fprintf(op, "MOV R%d, R%d\n",reg1, reg2);
+            fprintf(op, "PUSH R%d\n",reg2);
             fprintf(op, "PUSH R%d\n",reg1);
             fprintf(op, "PUSH R%d\n",reg1);
-            fprintf(op, "PUSH R%d\n",reg1);
+
             fprintf(op, "CALL 0\n");
+
             fprintf(op, "POP R%d\n",reg1);
             fprintf(op, "POP R%d\n",reg1);
             fprintf(op, "POP R%d\n",reg1);
@@ -144,7 +222,6 @@ void auxFunctions(FILE * op, int codePrint, int reg1, int reg2) {
         }
     }
 }
-
 
 int codeGen(struct tnode * root, FILE * op) {
     int r1, r2, label1, label2 ;
@@ -156,19 +233,15 @@ int codeGen(struct tnode * root, FILE * op) {
             return r1 ;
         }
         case ID_NODE :{
-            r1 = getReg();
-            
-            int idAddress = root->Gentry->binding ;
-            fprintf(op, "MOV R%d, [%d]\n",r1,idAddress);
-            return r1 ;
+            return evalExpression(root,op);
+        }
+        case MATRIX_NODE : {
+            return evalExpression(root,op);
         }
         case ARR_NODE : {
-            int addrReg = getAddress(root,op);
-            int valReg = getReg();
+            int addrReg = evalExpression(root,op);
 
-            fprintf(op,"MOV R%d, [R%d]\n",valReg,addrReg);
-            freeReg();
-            return valReg ;
+            return addrReg ;
         }
         case STR_NODE :{
             r1 = getReg();
@@ -180,7 +253,7 @@ int codeGen(struct tnode * root, FILE * op) {
             int effectiveAddress = getAddress(root->left,op);
 
             auxFunctions(op,READ_CODE,r1,effectiveAddress);
-
+            freeReg();
             freeReg();
             return -1;
         }
@@ -236,8 +309,11 @@ int codeGen(struct tnode * root, FILE * op) {
         }
         case ASSIGN_NODE :{
             r2 = codeGen(root->right,op);
-            int assignAddress = root->left->Gentry->binding ;
-            fprintf(op, "MOV [%d], R%d\n",assignAddress,r2);
+            int assignReg = getAddress(root->left,op);
+
+            fprintf(op, "MOV [R%d], R%d\n",assignReg,r2);
+
+            freeReg();
             freeReg();
             return -1;
         }
@@ -328,6 +404,10 @@ void inorder(struct tnode * root) {
         switch(root->nodetype) {
             case NUM_NODE : {
                 printf("%d ",root->val);
+                break;
+            }
+            case STR_NODE : {
+                printf("%s ",root->varname);
                 break;
             }
             case ID_NODE : {

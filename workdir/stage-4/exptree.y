@@ -115,12 +115,12 @@ DeclList    :   DeclList Decl                                                   
 Decl        :   Type VarList SEMICOLON                                          { }
             ;
 
-VarList     :   ID '[' NUM ']'                                                  {   head = insertTable(head,($1)->varname,currentType,$3);}
-            |   ID '[' NUM ']' '[' NUM ']'                                      {   head = insertTable();}
-            |   ID                                                              {   head = insertTable(head,($1)->varname,currentType,1); }
-            |   VarList ',' ID '[' NUM ']'                                      {   head = insertTable(head,($3)->varname,currentType,$5);}
-            |   VarList ',' ID                                                  {   head = insertTable(head,($3)->varname,currentType,1); }
-            |   VarList ',' ID '[' NUM ']' '[' NUM ']'                          {   head = insertTable();}
+VarList     :   ID '[' NUM ']'                                                  {   head = insertTable(head,($1)->varname,currentType,$3,0);}
+            |   ID '[' NUM ']' '[' NUM ']'                                      {   head = insertTable(head,($1)->varname,currentType,$3,$6);}
+            |   ID                                                              {   head = insertTable(head,($1)->varname,currentType,1,0); }
+            |   VarList ',' ID '[' NUM ']'                                      {   head = insertTable(head,($3)->varname,currentType,$5,0);}
+            |   VarList ',' ID                                                  {   head = insertTable(head,($3)->varname,currentType,1,0); }
+            |   VarList ',' ID '[' NUM ']' '[' NUM ']'                          {   head = insertTable(head,($3)->varname,currentType,$5,$8);}
             ;
 
 IDENTIFIERS :   ID                                                              {   
@@ -134,7 +134,9 @@ IDENTIFIERS :   ID                                                              
                                                                                     $$ = node;
                                                                                 }
             |   ID '['  expr ']' '['  expr ']'                                  {
-                                                                                    
+                                                                                    struct tnode * node = setTypeId(head,$1,$3,$6);
+                                                                                    node->nodetype = MATRIX_NODE ;
+                                                                                    $$ = node;
                                                                                 }
             ;
 

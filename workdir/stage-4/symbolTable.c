@@ -3,16 +3,20 @@
 
 int bindAddress = STACK_BASE ;
 
-struct Gsymbol* createSymbolNode(char* name, int type, int size) {
+struct Gsymbol* createSymbolNode(char* name, int type, int size1, int size2) {
     struct Gsymbol * node = (struct Gsymbol *) malloc(sizeof(struct Gsymbol));
 
     node->name = name ;
     node->type = type ;
-    node->size1 = size ;
+    node->size1 = size1 ;
+    node->size2 = size2 ;
     node->next = NULL ;
     node->binding = bindAddress ;
-    bindAddress += size ;
-
+    if(size2 != 0) {
+        bindAddress += (size1 * size2) ;
+    } else {
+        bindAddress += size1 ;
+    }
     return node ;
 }
 
@@ -32,14 +36,14 @@ struct Gsymbol * find(struct Gsymbol * head, char * name) {
 }
 
 
-struct Gsymbol * insertTable(struct Gsymbol * head,char * name, int type, int size) {
+struct Gsymbol * insertTable(struct Gsymbol * head,char * name, int type, int size1,int size2) {
     if(find(head,name) != NULL) {
         printf("Redeclaration of variable\n");
         exit(1);
     } 
 
     struct Gsymbol * temp = head ;
-    struct Gsymbol * node = createSymbolNode(name,type,size); 
+    struct Gsymbol * node = createSymbolNode(name,type,size1,size2); 
 
     if(temp == NULL) {
         head = node ;
