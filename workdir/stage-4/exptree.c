@@ -65,7 +65,7 @@ struct tnode * exprNode(int nodeType, struct tnode * left , struct tnode * right
             printf("Type Mismatch\n");
             exit(1);
         } else {
-                return createTreeNode(NO_VAL,BOOL_TYPE,NULL,nodeType,NULL,left,right);
+            return createTreeNode(NO_VAL,BOOL_TYPE,NULL,nodeType,NULL,left,right);
         }
     }
 
@@ -74,6 +74,19 @@ struct tnode * exprNode(int nodeType, struct tnode * left , struct tnode * right
 }
 
 struct tnode * assignNode(struct tnode * left, struct tnode * right) {
+    if(left->nodetype == DEREF_NODE) {
+        if(left->type == INT_PTR_TYPE) {
+            if(right->type != INT_TYPE) {
+                printf("Type Mismatch\n");
+                exit(1);
+            }
+        }
+        if(left->type == STR_TYPE) {
+            printf("Type Incompatible");
+            exit(1);
+        }
+    }
+
     if(left->nodetype == ID_NODE) {
         if(left->type == INT_TYPE) {
             if(right->type != INT_TYPE) {
@@ -91,25 +104,54 @@ struct tnode * assignNode(struct tnode * left, struct tnode * right) {
     return createTreeNode(NO_VAL,NO_TYPE,NULL,ASSIGN_NODE,NULL,left,right);
 }
 
+struct tnode * exitNode(int nodeType) {
+    return createTreeNode(NO_VAL,NO_TYPE,NULL,EXIT_NODE,NULL,NULL,NULL);
+}
+
 struct tnode * ifelseNode(int nodeType ,struct tnode * left, struct tnode * right) {
 
     return  createTreeNode(NO_VAL,NO_TYPE,NULL,nodeType,NULL,left,right);
 }
 
 struct tnode * setTypeId(struct Gsymbol * head ,struct tnode * idNode,struct tnode * leftExprNode, struct tnode * rightExprNode) {
-    struct Gsymbol * node = find(head , idNode->varname) ;
+    struct Gsymbol * temp = find(head , idNode->varname) ;
 
-    if(node == NULL) {
+    if(temp == NULL) {
         printf("Id not declared\n");
         exit(1);
     }
 
     idNode->left = leftExprNode ;
     idNode->right = rightExprNode ;
-    idNode->type = node->type ;
-    idNode->Gentry = node ;
+    idNode->type = temp->type ;
+    idNode->Gentry = temp ;
 
     return idNode ;
 }
 
+struct tnode * pointerNode(struct Gsymbol * head,int nodeType,struct tnode * node, struct tnode * left, struct tnode * right) {
+    struct Gsymbol * symbolNode = find(head, node->varname);
 
+    struct tnode * temp = createTreeNode(NO_VAL,NO_TYPE,NULL,nodeType,symbolNode,NULL,NULL);
+
+    if(nodeType == DEREF_NODE) {
+        if(node->Gentry->type == INT_PTR_TYPE) {
+            temp->type = INT_TYPE;
+            node->type = INT_PTR_TYPE ;
+        } else {
+            temp->type = STR_TYPE ;
+            node->type = STR_PTR_TYPE ;
+        }
+    } else if(nodeType == ADDR_NODE) {
+        if(node->Gentry->type == INT_TYPE) {
+            temp->type = INT_PTR_TYPE ;
+            node->type = INT_TYPE ;
+        } else {
+            temp->type = STR_PTR_TYPE ;
+            node->type = STR_TYPE ;
+        }
+    }
+    temp->left = node ;
+
+    return temp ;
+}

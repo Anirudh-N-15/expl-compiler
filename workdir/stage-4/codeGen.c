@@ -86,8 +86,8 @@ int getAddress(struct tnode * root,FILE * op) {
             int colSize = root->Gentry->size2 ;
 
             fprintf(op, "MOV R%d, %d\n",baseReg,baseAddress);       //Base Address
-            fprintf(op, "MOV R%d, %d\n",tempReg,colSize);            //colSize
-            fprintf(op, "MUL R%d, R%d\n",rowReg,tempReg);            // row = row * colSize 
+            fprintf(op, "MOV R%d, %d\n",tempReg,colSize);           //colSize
+            fprintf(op, "MUL R%d, R%d\n",rowReg,tempReg);           // row = row * colSize 
             fprintf(op, "ADD R%d, R%d\n",rowReg,colReg);            // row = row + col
             fprintf(op, "ADD R%d, R%d\n",baseReg,rowReg);           //BaseAddress = BaseAdrress + row
             freeReg();
@@ -101,6 +101,13 @@ int getAddress(struct tnode * root,FILE * op) {
 
             fprintf(op, "MOV R%d, %d\n",r1,address);
             return r1 ;
+        }
+        case DEREF_NODE : {
+            int ptrAddress = getAddress(root->left,op);
+
+            fprintf(op,"MOV R%d, [R%d]\n",ptrAddress,ptrAddress);
+
+            return ptrAddress ;
         }
     }
 }
@@ -152,6 +159,15 @@ int evalExpression(struct tnode * root,FILE * op) {
             int address = root->Gentry->binding ;
 
             fprintf(op, "MOV R%d, %d\n",r1,address);
+            fprintf(op, "MOV R%d, [R%d]\n",r1,r1);
+            return r1 ;
+        }
+        case DEREF_NODE : {
+            int r1 = getReg();
+            int address = root->Gentry->binding ;
+
+            fprintf(op, "MOV R%d, %d\n",r1,address);
+            fprintf(op, "MOV R%d, [R%d]\n",r1,r1);
             fprintf(op, "MOV R%d, [R%d]\n",r1,r1);
             return r1 ;
         }
@@ -239,9 +255,7 @@ int codeGen(struct tnode * root, FILE * op) {
             return evalExpression(root,op);
         }
         case ARR_NODE : {
-            int addrReg = evalExpression(root,op);
-
-            return addrReg ;
+            return evalExpression(root,op);
         }
         case STR_NODE :{
             r1 = getReg();
@@ -274,16 +288,14 @@ int codeGen(struct tnode * root, FILE * op) {
             freeReg();
 
             if(root->right->nodetype == ELSE_NODE) {
-                r1 = codeGen(root->right->left,op) ;
+                codeGen(root->right->left,op) ;
                 label2 = getLabel() ;
                 fprintf(op, "JMP L%d\n",label2);
 
                 fprintf(op, "L%d:\n",label1);
-                r1 = codeGen(root->right->right,op);
-                freeReg();
+                codeGen(root->right->right,op);
             } else {
-                r1 = codeGen(root->right,op);
-                freeReg();
+                codeGen(root->right,op);
                 fprintf(op, "L%d:\n",label1);
             }
             return -1 ;
@@ -310,12 +322,21 @@ int codeGen(struct tnode * root, FILE * op) {
         case ASSIGN_NODE :{
             r2 = codeGen(root->right,op);
             int assignReg = getAddress(root->left,op);
-
             fprintf(op, "MOV [R%d], R%d\n",assignReg,r2);
 
             freeReg();
             freeReg();
             return -1;
+        }
+        case DEREF_NODE : {
+            int ptrAddress = getAddress(root->left,op);
+
+            fprintf(op,"MOV R%d, [R%d]\n",ptrAddress,ptrAddress);
+            fprintf(op,"MOV R%d, [R%d]\n",ptrAddress,ptrAddress);
+            return ptrAddress ;
+        }
+        case ADDR_NODE : {
+            return getAddress(root->left,op);
         }
         case ADD_NODE :{
             r1 = codeGen(root->left,op);
@@ -391,8 +412,12 @@ int codeGen(struct tnode * root, FILE * op) {
         }
         case BREAK_NODE : {
             fprintf(op, "JMP L%d\n",getBreakLabel());
+            return -1;
         }
-
+        case EXIT_NODE : {
+            auxFunctions(op,EXIT_CODE,-1,-1);
+            return -1;
+        }
     }
 
 }
@@ -406,6 +431,10 @@ void inorder(struct tnode * root) {
                 printf("%d ",root->val);
                 break;
             }
+            case EXIT_NODE : {
+                printf("exit ");
+                break;
+            }
             case STR_NODE : {
                 printf("%s ",root->varname);
                 break;
@@ -416,6 +445,10 @@ void inorder(struct tnode * root) {
             }
             case ARR_NODE : {
                 printf("%s ",root->varname);
+            }
+            case DEREF_NODE : {
+                printf("(*%s) ",root->left->varname);
+                break;
             }
             case READ_NODE : {
                 printf("Read ");

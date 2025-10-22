@@ -22,9 +22,9 @@
 }
 
 %token PLUS MINUS STAR DIV 
-%token LE LT GT GE EQ NE 
+%token LE LT GT GE EQ NE AMPERSAND
 %token IF ELSE WHILE REPEAT UNTIL DO BREAK CONTINUE ENDIF ENDWHILE 
-%token DECL ENDDECL BEG END INT STR SEMICOLON THEN READ WRITE 
+%token DECL ENDDECL BEG END INT STR SEMICOLON THEN READ WRITE EXIT_PR
 
 %token <number> NUM 
 %token <string> STR_LITERAL
@@ -33,10 +33,12 @@
 %type <node> program stmt stmtList ipStmt opStmt assignStmt whileStmt doWhileStmt repeatStmt ifStmt
 %type <node> IDENTIFIERS expr 
 
-%right ASSIGN 
-%left NE EQ LT LE GE GT 
+
+%nonassoc NE EQ LT LE GE GT 
 %left PLUS MINUS  
 %left STAR DIV MOD 
+%right ASSIGN
+
 
 %%
 
@@ -69,7 +71,8 @@ stmt        :   ipStmt                          {   $$ = $1 ; }
             |   repeatStmt                      {   $$ = $1 ; }
             |   BREAK SEMICOLON                 {   $$ = flowControlNode(BREAK_NODE); }
             |   CONTINUE SEMICOLON              {   $$ = flowControlNode(CONTINUE_NODE); }
-            ;
+            |   EXIT_PR SEMICOLON               {   $$ = exitNode(EXIT_NODE); }
+            ;                   
 
 ifStmt      :   IF '(' expr ')' THEN stmtList ELSE stmtList ENDIF SEMICOLON     {   
                                                                                     struct tnode * temp = ifelseNode(ELSE_NODE,$6,$8);
@@ -117,10 +120,12 @@ Decl        :   Type VarList SEMICOLON                                          
 
 VarList     :   ID '[' NUM ']'                                                  {   head = insertTable(head,($1)->varname,currentType,$3,0);}
             |   ID '[' NUM ']' '[' NUM ']'                                      {   head = insertTable(head,($1)->varname,currentType,$3,$6);}
-            |   ID                                                              {   head = insertTable(head,($1)->varname,currentType,1,0); }
             |   VarList ',' ID '[' NUM ']'                                      {   head = insertTable(head,($3)->varname,currentType,$5,0);}
             |   VarList ',' ID                                                  {   head = insertTable(head,($3)->varname,currentType,1,0); }
             |   VarList ',' ID '[' NUM ']' '[' NUM ']'                          {   head = insertTable(head,($3)->varname,currentType,$5,$8);}
+            |   VarList ',' STAR ID                                             {   head = insertTable(head,($4)->varname,currentType,1,0); }
+            |   ID                                                              {   head = insertTable(head,($1)->varname,currentType,1,0); }
+            |   STAR ID                                                         {   head = insertTable(head,($2)->varname,currentType == INT_TYPE ? INT_PTR_TYPE : STR_PTR_TYPE,1,0); }
             ;
 
 IDENTIFIERS :   ID                                                              {   
@@ -138,6 +143,20 @@ IDENTIFIERS :   ID                                                              
                                                                                     node->nodetype = MATRIX_NODE ;
                                                                                     $$ = node;
                                                                                 }
+            |   STAR ID                                                         {   
+                                                                                    struct tnode * node = setTypeId(head,$2,NULL,NULL);
+                                                                                    node->nodetype = ID_NODE;                              
+                                                                                    $$ = pointerNode(head,DEREF_NODE,node,NULL,NULL);
+
+                                                                                }
+
+            |   AMPERSAND ID                                                    {   
+                                                                                    struct tnode * node = setTypeId(head,$2,NULL,NULL);
+                                                                                    node->nodetype = ID_NODE ;
+                                                                                    $$ = pointerNode(head,ADDR_NODE,node,NULL,NULL);
+                                                                                    
+                                                                                }
+
             ;
 
             

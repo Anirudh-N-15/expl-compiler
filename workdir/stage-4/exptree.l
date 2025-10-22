@@ -15,6 +15,7 @@ id          {letter}({letter}|{digit})*
             
 "begin"     return BEG ;
 "end"       return END ;
+"Exit"      return EXIT_PR ;
 
 "read"      return READ ; 
 "write"     return WRITE ;
@@ -52,6 +53,7 @@ id          {letter}({letter}|{digit})*
 "*"         return STAR ;
 "/"         return DIV ;
 
+"&"         return AMPERSAND ;
 ","         return *yytext;
 [()\[\]]    return *yytext ;
 [ \t\n]     {}

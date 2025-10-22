@@ -1,0 +1,11 @@
+decl
+    int *p, a,b ;
+enddecl
+
+begin
+    a = 10 ;
+    p = &a ;
+    b = 2 * *p ;
+
+    write(b);
+end;

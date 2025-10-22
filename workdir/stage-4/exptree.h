@@ -52,14 +52,18 @@ enum nodetype {
     ARR_NODE        = 27,
     MATRIX_NODE     = 28,
     ADDR_NODE       = 29,
-    DEREF_NODE      = 30  
+    DEREF_NODE      = 30,
+    REF_NODE        = 31,
+    EXIT_NODE       = 32
 };
 
 enum Datatype {
     INT_TYPE    = 0,
     BOOL_TYPE   = 1,
     STR_TYPE    = 2,
-    NO_TYPE     = 3
+    NO_TYPE     = 3,
+    INT_PTR_TYPE = 4,
+    STR_PTR_TYPE = 5
 };
 
 
@@ -81,6 +85,8 @@ struct tnode * exprNode(int type ,struct tnode * left, struct tnode * right);
 struct tnode * assignNode(struct tnode * left, struct tnode * right);
 struct tnode * setTypeId(struct Gsymbol * head, struct tnode * idNode,struct tnode * leftExprNode, struct tnode * rightExprNode);
 struct tnode * ifelseNode(int nodeType, struct tnode * left, struct tnode * right);
+struct tnode * pointerNode(struct Gsymbol * head,int nodeType,struct tnode * node,struct tnode * left, struct tnode * right);
+struct tnode * exitNode(int nodeType);
 
 
 #endif
