@@ -52,6 +52,7 @@ id          {letter}({letter}|{digit})*
 "-"         return MINUS ;
 "*"         return STAR ;
 "/"         return DIV ;
+"%"         return MOD ;
 
 "&"         return AMPERSAND ;
 ","         return *yytext;

@@ -39,7 +39,8 @@ struct tnode * flowControlNode(int nodetype) {
 
 int isArithmeticOp(int nodeType) {
     return (nodeType == ADD_NODE || nodeType == MINUS_NODE ||
-            nodeType == MUL_NODE || nodeType == DIV_NODE);
+            nodeType == MUL_NODE || nodeType == DIV_NODE ||
+            nodeType == MOD_NODE);
 }
 
 int isRelop(int nodeType) {

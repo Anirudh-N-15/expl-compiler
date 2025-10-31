@@ -164,6 +164,7 @@ expr        :   expr MINUS expr             {   $$ = exprNode(MINUS_NODE, $1, $3
             |   expr PLUS  expr             {   $$ = exprNode(ADD_NODE, $1, $3); }
             |   expr STAR  expr             {   $$ = exprNode(MUL_NODE, $1, $3); }
             |   expr DIV   expr             {   $$ = exprNode(DIV_NODE, $1, $3); }
+            |   expr MOD   expr             {   $$ = exprNode(MOD_NODE, $1, $3); }
             |   expr LE    expr             {   $$ = exprNode(LE_NODE, $1, $3); }
             |   expr LT    expr             {   $$ = exprNode(LT_NODE, $1, $3); }
             |   expr GT    expr             {   $$ = exprNode(GT_NODE, $1, $3); }

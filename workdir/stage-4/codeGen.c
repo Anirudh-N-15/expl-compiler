@@ -21,6 +21,7 @@ int getReg() {
        return ++maxReg ;
     } else {
         printf("Out of registers\n");
+        exit(1);
     }
     return -1 ;
 } 
@@ -294,6 +295,7 @@ int codeGen(struct tnode * root, FILE * op) {
 
                 fprintf(op, "L%d:\n",label1);
                 codeGen(root->right->right,op);
+                fprintf(op,"L%d:\n",label2);
             } else {
                 codeGen(root->right,op);
                 fprintf(op, "L%d:\n",label1);
@@ -366,6 +368,13 @@ int codeGen(struct tnode * root, FILE * op) {
             freeReg();
             return r1 ;
         }
+        case MOD_NODE :{
+            r1 = codeGen(root->left,op);
+            r2 = codeGen(root->right,op);
+            fprintf(op,"MOD R%d, R%d\n",r1,r2);
+            //freeReg();
+            return r1 ;  
+        }
         case GT_NODE :{
             r1 = codeGen(root->left,op);
             r2 = codeGen(root->right,op);
@@ -386,6 +395,13 @@ int codeGen(struct tnode * root, FILE * op) {
             fprintf(op, "LT R%d, R%d\n",r1,r2);
             freeReg();
             return r1 ;
+        }
+        case LE_NODE : {
+            r1 = codeGen(root->left,op);
+            r2 = codeGen(root->right,op);
+            fprintf(op,"LE R%d, R%d\n",r1,r2);
+            freeReg();
+            return r1;
         }
         case EQ_NODE : {
             r1 = codeGen(root->left,op);
@@ -419,7 +435,6 @@ int codeGen(struct tnode * root, FILE * op) {
             return -1;
         }
     }
-
 }
 
 void inorder(struct tnode * root) {
@@ -464,6 +479,10 @@ void inorder(struct tnode * root) {
             }
             case ADD_NODE : {
                 printf("+ ");
+                break;
+            }
+            case MOD_NODE : {
+                printf("mod ");
                 break;
             }
             case MINUS_NODE : {
