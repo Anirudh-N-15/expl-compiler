@@ -60,7 +60,8 @@ enum nodetype {
     FUNC_CALL_NODE  = 33,
     PARAM_NODE      = 34,
     GID_NODE        = 35,
-    RETURN_NODE     = 36
+    RETURN_NODE     = 36,
+    AND_NODE        = 37
 };
 
 enum Datatype {

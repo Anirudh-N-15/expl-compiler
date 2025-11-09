@@ -37,6 +37,8 @@ id          {letter}({letter}|{digit})*
 "int"       return INT ;
 "str"       return STR ;
 
+"AND"       return AND ;
+
 "decl"      return DECL ;
 "enddecl"   return ENDDECL ;
 

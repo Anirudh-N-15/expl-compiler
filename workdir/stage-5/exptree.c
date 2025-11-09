@@ -46,15 +46,27 @@ int isArithmeticOp(int nodeType) {
 int isRelop(int nodeType) {
     return (nodeType == LT_NODE || nodeType == LE_NODE ||
             nodeType == GT_NODE || nodeType == GE_NODE ||
-            nodeType == EQ_NODE || nodeType == NE_NODE);
+            nodeType == EQ_NODE || nodeType == NE_NODE );
 }
 
+int isLogical(int nodeType) {
+    return (nodeType == AND_NODE) ;
+}
 
 struct tnode * exprNode(int nodeType, struct tnode * left , struct tnode * right) {
 
+    if(isLogical(nodeType)) {
+        if(left->type != BOOL_TYPE || right->type != BOOL_TYPE) {
+            printf("Type Mismatch in Bool\n");
+            exit(1);
+        } else {
+            return createTreeNode(NO_VAL,BOOL_TYPE,NULL,nodeType,NULL,left,NULL,right);
+        }
+    }
+
     if(isArithmeticOp(nodeType)) {
         if(left->type != INT_TYPE || right->type != INT_TYPE) {
-            printf("Type Mismatch\n");
+            printf("Type Mismatch in Arithmetic\n");
             exit(1);
         } else {
             return createTreeNode(NO_VAL,INT_TYPE,NULL,nodeType,NULL,left,NULL,right);
@@ -63,7 +75,7 @@ struct tnode * exprNode(int nodeType, struct tnode * left , struct tnode * right
 
     if(isRelop(nodeType)) {
         if(left->type != INT_TYPE || right->type != INT_TYPE) {
-            printf("Type Mismatch\n");
+            printf("Type Mismatch in Relop\n");
             exit(1);
         } else {
             return createTreeNode(NO_VAL,BOOL_TYPE,NULL,nodeType,NULL,left,NULL,right);

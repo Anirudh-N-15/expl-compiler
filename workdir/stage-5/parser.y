@@ -29,7 +29,7 @@
 }
 
 %token PLUS MINUS STAR DIV 
-%token LE LT GT GE EQ NE 
+%token LE LT GT GE EQ NE AND ASSIGN
 %token IF ELSE WHILE REPEAT UNTIL DO BREAK CONTINUE ENDIF ENDWHILE 
 %token DECL ENDDECL BEG END INT STR SEMICOLON THEN READ WRITE EXIT_PR
 %token MAIN RETURN 
@@ -43,10 +43,11 @@
 %type <paramList> ParamList Param
 
 
-%nonassoc NE EQ LT LE GE GT 
-%left PLUS MINUS  
-%left STAR DIV  
 %right ASSIGN
+%left AND 
+%nonassoc NE EQ LT LE GE GT 
+%left PLUS MINUS 
+%left STAR DIV  
 
 
 %%
@@ -65,7 +66,6 @@ MainBlock   :   INT MAIN '(' ')' '{'            {
                                                     }
                                                 }
                 LdeclBlock Body '}'             {
-                                                   
 
                                                     currentFunc->bodyAST = $8 ;
                                                     currentFunc->Lentry = Lhead ;
@@ -158,6 +158,7 @@ EXPR        :   EXPR MINUS EXPR             {   $$ = exprNode(MINUS_NODE, $1, $3
             |   EXPR PLUS  EXPR             {   $$ = exprNode(ADD_NODE, $1, $3); }
             |   EXPR STAR  EXPR             {   $$ = exprNode(MUL_NODE, $1, $3); }
             |   EXPR DIV   EXPR             {   $$ = exprNode(DIV_NODE, $1, $3); }
+            |   EXPR AND   EXPR             {   $$ = exprNode(AND_NODE,$1, $3); }
             |   EXPR LE    EXPR             {   $$ = exprNode(LE_NODE, $1, $3); }
             |   EXPR LT    EXPR             {   $$ = exprNode(LT_NODE, $1, $3); }
             |   EXPR GT    EXPR             {   $$ = exprNode(GT_NODE, $1, $3); }
@@ -224,9 +225,11 @@ Fdef        :   GType ID '(' ParamList ')' '{'  {
 
 
 ifStmt      :   IF '(' EXPR ')' THEN stmtList ELSE stmtList ENDIF SEMICOLON     {   
+                                                                                    
                                                                                     $$ = ifelseNode(IF_NODE,$3,$6,$8);
                                                                                 }
             |   IF '(' EXPR ')' THEN stmtList ENDIF SEMICOLON                   {
+                                                                                    
                                                                                     $$ = ifelseNode(IF_NODE,$3,$6,NULL);
                                                                                 }
             ;
