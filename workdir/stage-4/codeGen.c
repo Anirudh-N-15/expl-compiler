@@ -372,7 +372,7 @@ int codeGen(struct tnode * root, FILE * op) {
             r1 = codeGen(root->left,op);
             r2 = codeGen(root->right,op);
             fprintf(op,"MOD R%d, R%d\n",r1,r2);
-            //freeReg();
+            freeReg();
             return r1 ;  
         }
         case GT_NODE :{
