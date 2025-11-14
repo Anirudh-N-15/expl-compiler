@@ -29,7 +29,7 @@
 }
 
 %token PLUS MINUS STAR DIV 
-%token LE LT GT GE EQ NE AND ASSIGN
+%token LE LT GT GE EQ NE AND OR NOT ASSIGN
 %token IF ELSE WHILE REPEAT UNTIL DO BREAK CONTINUE ENDIF ENDWHILE 
 %token DECL ENDDECL BEG END INT STR SEMICOLON THEN READ WRITE EXIT_PR
 %token MAIN RETURN 
@@ -44,7 +44,7 @@
 
 
 %right ASSIGN
-%left AND 
+%left AND OR NOT 
 %nonassoc NE EQ LT LE GE GT 
 %left PLUS MINUS 
 %left STAR DIV  
@@ -159,6 +159,8 @@ EXPR        :   EXPR MINUS EXPR             {   $$ = exprNode(MINUS_NODE, $1, $3
             |   EXPR STAR  EXPR             {   $$ = exprNode(MUL_NODE, $1, $3); }
             |   EXPR DIV   EXPR             {   $$ = exprNode(DIV_NODE, $1, $3); }
             |   EXPR AND   EXPR             {   $$ = exprNode(AND_NODE,$1, $3); }
+            |   EXPR OR    EXPR             {   $$ = exprNode(OR_NODE,$1, $3); }
+            |   NOT EXPR                    {   $$ = exprNode(NOT_NODE,$2, NULL);}
             |   EXPR LE    EXPR             {   $$ = exprNode(LE_NODE, $1, $3); }
             |   EXPR LT    EXPR             {   $$ = exprNode(LT_NODE, $1, $3); }
             |   EXPR GT    EXPR             {   $$ = exprNode(GT_NODE, $1, $3); }

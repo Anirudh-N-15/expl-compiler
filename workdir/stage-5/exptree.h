@@ -61,7 +61,9 @@ enum nodetype {
     PARAM_NODE      = 34,
     GID_NODE        = 35,
     RETURN_NODE     = 36,
-    AND_NODE        = 37
+    AND_NODE        = 37,
+    OR_NODE         = 38,
+    NOT_NODE        = 39
 };
 
 enum Datatype {

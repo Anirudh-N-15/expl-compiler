@@ -782,7 +782,7 @@ YY_RULE_SETUP
                                 fprintf(op,"%d\n",ans);
                             }
                         } else {
-                            ++currAddress ;
+                            currAddress++ ;
                             funcCurrAddress++ ;
                         }
                     }

@@ -60,33 +60,35 @@ extern int yydebug;
     EQ = 266,
     NE = 267,
     AND = 268,
-    ASSIGN = 269,
-    IF = 270,
-    ELSE = 271,
-    WHILE = 272,
-    REPEAT = 273,
-    UNTIL = 274,
-    DO = 275,
-    BREAK = 276,
-    CONTINUE = 277,
-    ENDIF = 278,
-    ENDWHILE = 279,
-    DECL = 280,
-    ENDDECL = 281,
-    BEG = 282,
-    END = 283,
-    INT = 284,
-    STR = 285,
-    SEMICOLON = 286,
-    THEN = 287,
-    READ = 288,
-    WRITE = 289,
-    EXIT_PR = 290,
-    MAIN = 291,
-    RETURN = 292,
-    NUM = 293,
-    STR_LITERAL = 294,
-    ID = 295
+    OR = 269,
+    NOT = 270,
+    ASSIGN = 271,
+    IF = 272,
+    ELSE = 273,
+    WHILE = 274,
+    REPEAT = 275,
+    UNTIL = 276,
+    DO = 277,
+    BREAK = 278,
+    CONTINUE = 279,
+    ENDIF = 280,
+    ENDWHILE = 281,
+    DECL = 282,
+    ENDDECL = 283,
+    BEG = 284,
+    END = 285,
+    INT = 286,
+    STR = 287,
+    SEMICOLON = 288,
+    THEN = 289,
+    READ = 290,
+    WRITE = 291,
+    EXIT_PR = 292,
+    MAIN = 293,
+    RETURN = 294,
+    NUM = 295,
+    STR_LITERAL = 296,
+    ID = 297
   };
 #endif
 /* Tokens.  */
@@ -101,33 +103,35 @@ extern int yydebug;
 #define EQ 266
 #define NE 267
 #define AND 268
-#define ASSIGN 269
-#define IF 270
-#define ELSE 271
-#define WHILE 272
-#define REPEAT 273
-#define UNTIL 274
-#define DO 275
-#define BREAK 276
-#define CONTINUE 277
-#define ENDIF 278
-#define ENDWHILE 279
-#define DECL 280
-#define ENDDECL 281
-#define BEG 282
-#define END 283
-#define INT 284
-#define STR 285
-#define SEMICOLON 286
-#define THEN 287
-#define READ 288
-#define WRITE 289
-#define EXIT_PR 290
-#define MAIN 291
-#define RETURN 292
-#define NUM 293
-#define STR_LITERAL 294
-#define ID 295
+#define OR 269
+#define NOT 270
+#define ASSIGN 271
+#define IF 272
+#define ELSE 273
+#define WHILE 274
+#define REPEAT 275
+#define UNTIL 276
+#define DO 277
+#define BREAK 278
+#define CONTINUE 279
+#define ENDIF 280
+#define ENDWHILE 281
+#define DECL 282
+#define ENDDECL 283
+#define BEG 284
+#define END 285
+#define INT 286
+#define STR 287
+#define SEMICOLON 288
+#define THEN 289
+#define READ 290
+#define WRITE 291
+#define EXIT_PR 292
+#define MAIN 293
+#define RETURN 294
+#define NUM 295
+#define STR_LITERAL 296
+#define ID 297
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -140,7 +144,7 @@ union YYSTYPE
     int number ;
     char * string ;
 
-#line 144 "y.tab.h"
+#line 148 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

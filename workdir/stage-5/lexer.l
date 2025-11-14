@@ -38,6 +38,11 @@ id          {letter}({letter}|{digit})*
 "str"       return STR ;
 
 "AND"       return AND ;
+"&&"        return AND ;
+"OR"        return OR ;
+"||"        return OR ;
+"NOT"       return NOT ;
+"!"         return NOT ;
 
 "decl"      return DECL ;
 "enddecl"   return ENDDECL ;

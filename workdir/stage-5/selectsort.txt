@@ -1,0 +1,62 @@
+decl
+  int n, arr[10], i, j;
+  int selectionSort();
+enddecl
+
+int selectionSort()
+{
+  decl
+    int min, temp;
+  enddecl
+
+  begin
+    i = 0;
+    while (i < n - 1) do
+      
+      min = i;
+      j = i + 1;
+
+      while(j < n) do 
+        if(arr[j] < arr[min]) then 
+            min = j;
+        endif;
+        j = j +  1;
+      endwhile ;
+
+      temp = arr[i];
+      arr[i] = arr[min];
+      arr[min] = temp;
+
+      i = i + 1;
+    endwhile;
+
+    return 0;
+  end;
+}
+
+int main()
+{
+  decl
+    int r;
+  enddecl
+
+  begin
+    read(n);
+
+    i = 0;
+    while (i < n) do
+      read(arr[i]);
+      i = i + 1;
+    endwhile;
+
+    r = selectionSort();
+
+    i = 0;
+    while (i < n) do
+      write(arr[i]);
+      i = i + 1;
+    endwhile;
+
+    return 0;
+  end;
+}

@@ -485,6 +485,44 @@ int codeGen(struct tnode * root, FILE * op) {
             freeReg();
             return r1;
         }
+        case OR_NODE : {
+            label1 = getLabel();
+            label2 = getLabel();
+
+            r1 = codeGen(root->left,op);
+            fprintf(op,"JNZ R%d, L%d\n",r1,label1);
+
+            r2 = codeGen(root->right,op);
+            fprintf(op,"JNZ R%d, L%d\n",r2,label1);
+            
+            fprintf(op,"MOV R%d, 0\n",r1);
+            fprintf(op,"JMP L%d\n",label2);
+
+            fprintf(op,"L%d:\n",label1);
+            fprintf(op,"MOV R%d, 1\n",r1);
+
+            fprintf(op,"L%d:\n",label2);
+
+            freeReg();
+            return r1 ;
+        }
+        case NOT_NODE : {
+            label1 = getLabel();
+            label2 = getLabel();
+
+            r1 = codeGen(root->left,op);
+            fprintf(op,"JZ R%d, L%d\n",r1,label1);
+
+            fprintf(op,"MOV R%d, 0\n",r1);
+            fprintf(op,"JMP L%d\n",label2);
+
+            fprintf(op,"L%d:\n",label1);
+            fprintf(op,"MOV R%d, 1\n",r1);
+
+            fprintf(op,"L%d:\n",label2);
+
+            return r1 ;
+        }
         case CONNECT_NODE : {
             codeGen(root->left,op);
             codeGen(root->right,op);

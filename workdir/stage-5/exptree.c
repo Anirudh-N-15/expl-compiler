@@ -50,7 +50,8 @@ int isRelop(int nodeType) {
 }
 
 int isLogical(int nodeType) {
-    return (nodeType == AND_NODE) ;
+    return (nodeType == AND_NODE || nodeType == OR_NODE ||
+            nodeType == NOT_NODE) ;
 }
 
 struct tnode * exprNode(int nodeType, struct tnode * left , struct tnode * right) {
