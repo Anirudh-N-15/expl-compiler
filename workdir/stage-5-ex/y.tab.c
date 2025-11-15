@@ -82,6 +82,7 @@
     extern int yylineNum; 
     extern int localBinding ;
     int flabel = 1;
+    bool isPointer = false ;
 
     struct Gsymbol * Ghead  = NULL ;
     struct Lsymbol * Lhead  = NULL ; 
@@ -95,7 +96,7 @@
     struct TypeTable * TTableHead = NULL ;
     struct TypeTable * currTupleType = NULL ;
 
-#line 99 "y.tab.c"
+#line 100 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -237,7 +238,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 31 "parser.y"
+#line 32 "parser.y"
 
     struct ParamStruct * paramList ;
     struct tnode * node;
@@ -246,7 +247,7 @@ union YYSTYPE
     struct Fieldlist * flist ;
     struct TypeTable * type ;
 
-#line 250 "y.tab.c"
+#line 251 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -626,17 +627,17 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    66,    66,    67,    68,    71,    71,    91,    92,    95,
-      96,    99,   100,   103,   103,   121,   122,   125,   126,   129,
-     138,   144,   147,   148,   151,   152,   153,   157,   160,   161,
-     164,   168,   173,   174,   175,   178,   179,   182,   187,   188,
-     191,   192,   195,   196,   199,   199,   216,   217,   220,   221,
-     225,   226,   229,   230,   233,   234,   237,   238,   242,   243,
-     244,   245,   246,   247,   248,   249,   250,   251,   252,   253,
-     254,   255,   256,   257,   258,   259,   262,   265,   268,   274,
-     275,   278,   279,   280,   281,   282,   283,   284,   285,   286,
-     287,   290,   290,   311,   315,   321,   326,   329,   332,   335,
-     338,   341,   346,   351,   357,   362
+       0,    67,    67,    68,    69,    72,    72,    92,    93,    96,
+      97,   100,   101,   104,   104,   122,   123,   126,   127,   130,
+     139,   145,   148,   149,   152,   153,   154,   158,   161,   162,
+     165,   169,   174,   175,   176,   179,   180,   183,   188,   189,
+     192,   193,   196,   197,   200,   200,   217,   218,   221,   222,
+     226,   227,   230,   231,   234,   235,   238,   239,   243,   244,
+     245,   246,   247,   248,   249,   250,   251,   252,   253,   254,
+     255,   256,   257,   258,   259,   260,   263,   266,   269,   275,
+     276,   279,   280,   281,   282,   283,   284,   285,   286,   287,
+     288,   291,   291,   312,   316,   322,   327,   330,   333,   336,
+     339,   342,   347,   352,   358,   363
 };
 #endif
 
@@ -1627,38 +1628,38 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 66 "parser.y"
+#line 67 "parser.y"
                                                 {}
-#line 1633 "y.tab.c"
+#line 1634 "y.tab.c"
     break;
 
   case 3:
-#line 67 "parser.y"
+#line 68 "parser.y"
                                                 {}
-#line 1639 "y.tab.c"
+#line 1640 "y.tab.c"
     break;
 
   case 4:
-#line 68 "parser.y"
+#line 69 "parser.y"
                                                 {}
-#line 1645 "y.tab.c"
+#line 1646 "y.tab.c"
     break;
 
   case 5:
-#line 71 "parser.y"
+#line 72 "parser.y"
                                                 {   
-                                                    Ghead = insertTable(Ghead,"F0",T_INT,0,0); 
+                                                    Ghead = insertTable(Ghead,"F0",T_INT,false,0,0); 
                                                     currentFunc = find(Ghead, "F0");
                                                     if(currentFunc == NULL) {
                                                         printf("Error: Function '%s' not found in symbol table\n", "main");
                                                         exit(1);
                                                     }
                                                 }
-#line 1658 "y.tab.c"
+#line 1659 "y.tab.c"
     break;
 
   case 6:
-#line 79 "parser.y"
+#line 80 "parser.y"
                                                 {
 
                                                     currentFunc->bodyAST = (yyvsp[-1].node) ;
@@ -1669,47 +1670,47 @@ yyreduce:
                                                     Lhead = NULL ;
                                                     
                                                 }
-#line 1673 "y.tab.c"
+#line 1674 "y.tab.c"
     break;
 
   case 7:
-#line 91 "parser.y"
+#line 92 "parser.y"
                                             {}
-#line 1679 "y.tab.c"
+#line 1680 "y.tab.c"
     break;
 
   case 8:
-#line 92 "parser.y"
+#line 93 "parser.y"
                                             {}
-#line 1685 "y.tab.c"
+#line 1686 "y.tab.c"
     break;
 
   case 9:
-#line 95 "parser.y"
+#line 96 "parser.y"
                                             {}
-#line 1691 "y.tab.c"
+#line 1692 "y.tab.c"
     break;
 
   case 10:
-#line 96 "parser.y"
+#line 97 "parser.y"
                                             {}
-#line 1697 "y.tab.c"
+#line 1698 "y.tab.c"
     break;
 
   case 11:
-#line 99 "parser.y"
+#line 100 "parser.y"
                                             {}
-#line 1703 "y.tab.c"
+#line 1704 "y.tab.c"
     break;
 
   case 12:
-#line 100 "parser.y"
+#line 101 "parser.y"
                                             {}
-#line 1709 "y.tab.c"
+#line 1710 "y.tab.c"
     break;
 
   case 13:
-#line 103 "parser.y"
+#line 104 "parser.y"
                                                 {
                                                     int size = 0;
                                                     struct Fieldlist * temp = (yyvsp[-1].flist) ;
@@ -1725,41 +1726,41 @@ yyreduce:
                                                         exit(1);
                                                     }
                                                 }
-#line 1729 "y.tab.c"
+#line 1730 "y.tab.c"
     break;
 
   case 14:
-#line 118 "parser.y"
+#line 119 "parser.y"
                                                 {   currTupleType = NULL ;}
-#line 1735 "y.tab.c"
+#line 1736 "y.tab.c"
     break;
 
   case 15:
-#line 121 "parser.y"
+#line 122 "parser.y"
                                                {}
-#line 1741 "y.tab.c"
+#line 1742 "y.tab.c"
     break;
 
   case 16:
-#line 122 "parser.y"
+#line 123 "parser.y"
                                                {}
-#line 1747 "y.tab.c"
+#line 1748 "y.tab.c"
     break;
 
   case 17:
-#line 125 "parser.y"
-                                            {    Ghead = insertTable(Ghead, ((yyvsp[0].node))->varname, currTupleType, currTupleType->size, -1);}
-#line 1753 "y.tab.c"
+#line 126 "parser.y"
+                                            {    Ghead = insertTable(Ghead, ((yyvsp[0].node))->varname, currTupleType, false, currTupleType->size, -1);}
+#line 1754 "y.tab.c"
     break;
 
   case 18:
-#line 126 "parser.y"
-                                            {    /*Ghead = insertTable(Ghead, ($2)->varname, currTupleType, currTupleType->size, -1);*/}
-#line 1759 "y.tab.c"
+#line 127 "parser.y"
+                                            {    Ghead = insertTable(Ghead, ((yyvsp[0].node))->varname, currTupleType, true, currTupleType->size, -1);}
+#line 1760 "y.tab.c"
     break;
 
   case 19:
-#line 129 "parser.y"
+#line 130 "parser.y"
                                             {   
                                                 struct Fieldlist * temp = (yyvsp[-2].flist) ;
                                                 while(temp->next) {
@@ -1769,169 +1770,169 @@ yyreduce:
                                                 temp->next = (yyvsp[0].flist) ;
                                                 (yyval.flist) = (yyvsp[-2].flist) ;
                                             }
-#line 1773 "y.tab.c"
+#line 1774 "y.tab.c"
     break;
 
   case 20:
-#line 138 "parser.y"
+#line 139 "parser.y"
                                             {   
                                                 (yyvsp[0].flist)->fieldIndex = 0; 
                                                 (yyval.flist) = (yyvsp[0].flist) ;
                                             }
-#line 1782 "y.tab.c"
+#line 1783 "y.tab.c"
     break;
 
   case 21:
-#line 144 "parser.y"
+#line 145 "parser.y"
                                             {   (yyval.flist) = createFieldlistNode(((yyvsp[0].node))->varname,currentType,0); }
-#line 1788 "y.tab.c"
+#line 1789 "y.tab.c"
     break;
 
   case 22:
-#line 147 "parser.y"
+#line 148 "parser.y"
                                             {}
-#line 1794 "y.tab.c"
+#line 1795 "y.tab.c"
     break;
 
   case 23:
-#line 148 "parser.y"
+#line 149 "parser.y"
                                             {}
-#line 1800 "y.tab.c"
+#line 1801 "y.tab.c"
     break;
 
   case 24:
-#line 151 "parser.y"
-                                            {   Ghead = insertTable(Ghead,((yyvsp[0].node))->varname,currentType,1,-1); }
-#line 1806 "y.tab.c"
+#line 152 "parser.y"
+                                            {   Ghead = insertTable(Ghead,((yyvsp[0].node))->varname,currentType,false,1,-1); }
+#line 1807 "y.tab.c"
     break;
 
   case 25:
-#line 152 "parser.y"
-                                            {   Ghead = insertTable(Ghead,((yyvsp[-3].node))->varname,currentType,(yyvsp[-1].number),-1);}
-#line 1812 "y.tab.c"
+#line 153 "parser.y"
+                                            {   Ghead = insertTable(Ghead,((yyvsp[-3].node))->varname,currentType,false,(yyvsp[-1].number),-1);}
+#line 1813 "y.tab.c"
     break;
 
   case 26:
-#line 153 "parser.y"
+#line 154 "parser.y"
                                             {   
-                                                Ghead = insertTable(Ghead,((yyvsp[-3].node))->varname,currentType,0,flabel++);
+                                                Ghead = insertTable(Ghead,((yyvsp[-3].node))->varname,currentType,false,0,flabel++);
                                                 insertParamListToGST(Ghead,((yyvsp[-3].node))->varname,(yyvsp[-1].paramList));
                                             }
-#line 1821 "y.tab.c"
+#line 1822 "y.tab.c"
     break;
 
   case 27:
-#line 157 "parser.y"
-                                            {   Ghead = insertTable(Ghead,((yyvsp[0].node))->varname,currentType == T_INT ? T_INT_PTR : T_STR_PTR,1,-1); }
-#line 1827 "y.tab.c"
+#line 158 "parser.y"
+                                            {   Ghead = insertTable(Ghead,((yyvsp[0].node))->varname,currentType == T_INT ? T_INT_PTR : T_STR_PTR,true,1,-1); }
+#line 1828 "y.tab.c"
     break;
 
   case 28:
-#line 160 "parser.y"
+#line 161 "parser.y"
                                             {}
-#line 1833 "y.tab.c"
+#line 1834 "y.tab.c"
     break;
 
   case 29:
-#line 161 "parser.y"
+#line 162 "parser.y"
                                             {}
-#line 1839 "y.tab.c"
+#line 1840 "y.tab.c"
     break;
 
   case 30:
-#line 164 "parser.y"
+#line 165 "parser.y"
                                                 {  
                                                     (yyval.node) = connectNode((yyvsp[-3].node),(yyvsp[-2].node)); 
                                                     //inorder($$);
                                                 }
-#line 1848 "y.tab.c"
+#line 1849 "y.tab.c"
     break;
 
   case 31:
-#line 168 "parser.y"
+#line 169 "parser.y"
                                                 { 
                                                     (yyval.node) = (yyvsp[-2].node) ;
                                                 }
-#line 1856 "y.tab.c"
+#line 1857 "y.tab.c"
     break;
 
   case 32:
-#line 173 "parser.y"
-                                            {   (yyval.paramList) = insertToParamList((yyvsp[-2].paramList),((yyvsp[0].paramList))->name,((yyvsp[0].paramList))->type) ; }
-#line 1862 "y.tab.c"
+#line 174 "parser.y"
+                                            {   (yyval.paramList) = insertToParamList((yyvsp[-2].paramList),((yyvsp[0].paramList))->name,((yyvsp[0].paramList))->type,((yyvsp[0].paramList))->isPtr) ; }
+#line 1863 "y.tab.c"
     break;
 
   case 33:
-#line 174 "parser.y"
-                                            {   (yyval.paramList) = insertToParamList(NULL,((yyvsp[0].paramList))->name,((yyvsp[0].paramList))->type) ;}
-#line 1868 "y.tab.c"
+#line 175 "parser.y"
+                                            {   (yyval.paramList) = insertToParamList(NULL,((yyvsp[0].paramList))->name,((yyvsp[0].paramList))->type,((yyvsp[0].paramList))->isPtr) ;}
+#line 1869 "y.tab.c"
     break;
 
   case 34:
-#line 175 "parser.y"
+#line 176 "parser.y"
                                             {   (yyval.paramList) = NULL ;}
-#line 1874 "y.tab.c"
+#line 1875 "y.tab.c"
     break;
 
   case 35:
-#line 178 "parser.y"
-                                            {   (yyval.paramList) = createParamStructNode(strdup((yyvsp[0].node)->varname),paramType); }
-#line 1880 "y.tab.c"
+#line 179 "parser.y"
+                                            {   (yyval.paramList) = createParamStructNode(strdup((yyvsp[0].node)->varname),paramType,false); }
+#line 1881 "y.tab.c"
     break;
 
   case 36:
-#line 179 "parser.y"
-                                            {   (yyval.paramList) = createParamStructNode(strdup((yyvsp[0].node)->varname),paramType == T_INT ? T_INT_PTR : T_STR_PTR); }
-#line 1886 "y.tab.c"
+#line 180 "parser.y"
+                                            {   (yyval.paramList) = createParamStructNode(strdup((yyvsp[0].node)->varname),paramType == T_INT ? T_INT_PTR : T_STR_PTR,true); }
+#line 1887 "y.tab.c"
     break;
 
   case 37:
-#line 182 "parser.y"
+#line 183 "parser.y"
                                             {   
                                                 (yyval.node) = returnNode(currentFunc,RETURN_NODE,(yyvsp[-1].node)); 
                                                 //printf("%s\n",$$->left->varname);
                                             }
-#line 1895 "y.tab.c"
+#line 1896 "y.tab.c"
     break;
 
   case 38:
-#line 187 "parser.y"
+#line 188 "parser.y"
                                             {   localBinding = 1; }
-#line 1901 "y.tab.c"
+#line 1902 "y.tab.c"
     break;
 
   case 39:
-#line 188 "parser.y"
+#line 189 "parser.y"
                                             {}
-#line 1907 "y.tab.c"
+#line 1908 "y.tab.c"
     break;
 
   case 40:
-#line 191 "parser.y"
+#line 192 "parser.y"
                                             {}
-#line 1913 "y.tab.c"
+#line 1914 "y.tab.c"
     break;
 
   case 41:
-#line 192 "parser.y"
+#line 193 "parser.y"
                                             {}
-#line 1919 "y.tab.c"
+#line 1920 "y.tab.c"
     break;
 
   case 42:
-#line 195 "parser.y"
+#line 196 "parser.y"
                                             {}
-#line 1925 "y.tab.c"
+#line 1926 "y.tab.c"
     break;
 
   case 43:
-#line 196 "parser.y"
+#line 197 "parser.y"
                                             {}
-#line 1931 "y.tab.c"
+#line 1932 "y.tab.c"
     break;
 
   case 44:
-#line 199 "parser.y"
+#line 200 "parser.y"
                                                 {
                                                     int size = 0;
                                                     struct Fieldlist *temp = (yyvsp[-1].flist);
@@ -1946,294 +1947,294 @@ yyreduce:
                                                         exit(1);
                                                     }
                                                 }
-#line 1950 "y.tab.c"
+#line 1951 "y.tab.c"
     break;
 
   case 45:
-#line 213 "parser.y"
+#line 214 "parser.y"
                                                 {   currTupleType = NULL ;}
-#line 1956 "y.tab.c"
+#line 1957 "y.tab.c"
     break;
 
   case 46:
-#line 216 "parser.y"
+#line 217 "parser.y"
                                                 {}
-#line 1962 "y.tab.c"
+#line 1963 "y.tab.c"
     break;
 
   case 47:
-#line 217 "parser.y"
+#line 218 "parser.y"
                                                 {}
-#line 1968 "y.tab.c"
+#line 1969 "y.tab.c"
     break;
 
   case 48:
-#line 220 "parser.y"
-                                            {    Lhead = insertToLocalTable(Lhead, ((yyvsp[0].node))->varname, currTupleType);}
-#line 1974 "y.tab.c"
+#line 221 "parser.y"
+                                            {   Lhead = insertToLocalTable(Lhead, ((yyvsp[0].node))->varname, currTupleType,false,currTupleType->size);}
+#line 1975 "y.tab.c"
     break;
 
   case 49:
-#line 221 "parser.y"
-                                            {   }
-#line 1980 "y.tab.c"
+#line 222 "parser.y"
+                                            {   Lhead = insertToLocalTable(Lhead, ((yyvsp[0].node))->varname, currTupleType,true,1);}
+#line 1981 "y.tab.c"
     break;
 
   case 50:
-#line 225 "parser.y"
-                                            {   Lhead = insertToLocalTable(Lhead,((yyvsp[0].node))->varname,currLocalType);}
-#line 1986 "y.tab.c"
+#line 226 "parser.y"
+                                            {   Lhead = insertToLocalTable(Lhead,((yyvsp[0].node))->varname,currLocalType,false,1);}
+#line 1987 "y.tab.c"
     break;
 
   case 51:
-#line 226 "parser.y"
-                                            {   Lhead = insertToLocalTable(Lhead,((yyvsp[0].node))->varname,currLocalType);}
-#line 1992 "y.tab.c"
+#line 227 "parser.y"
+                                            {   Lhead = insertToLocalTable(Lhead,((yyvsp[0].node))->varname,currLocalType,false,1);}
+#line 1993 "y.tab.c"
     break;
 
   case 52:
-#line 229 "parser.y"
+#line 230 "parser.y"
                                             {   currentType = T_INT ;}
-#line 1998 "y.tab.c"
+#line 1999 "y.tab.c"
     break;
 
   case 53:
-#line 230 "parser.y"
+#line 231 "parser.y"
                                             {   currentType = T_STR ;}
-#line 2004 "y.tab.c"
+#line 2005 "y.tab.c"
     break;
 
   case 54:
-#line 233 "parser.y"
+#line 234 "parser.y"
                                             {   paramType = T_INT ;}
-#line 2010 "y.tab.c"
+#line 2011 "y.tab.c"
     break;
 
   case 55:
-#line 234 "parser.y"
+#line 235 "parser.y"
                                             {   paramType = T_STR ;}
-#line 2016 "y.tab.c"
+#line 2017 "y.tab.c"
     break;
 
   case 56:
-#line 237 "parser.y"
+#line 238 "parser.y"
                                             {   currLocalType = T_INT ;}
-#line 2022 "y.tab.c"
+#line 2023 "y.tab.c"
     break;
 
   case 57:
-#line 238 "parser.y"
+#line 239 "parser.y"
                                             {   currLocalType = T_STR ;}
-#line 2028 "y.tab.c"
+#line 2029 "y.tab.c"
     break;
 
   case 58:
-#line 242 "parser.y"
+#line 243 "parser.y"
                                             {   (yyval.node) = exprNode(MINUS_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2034 "y.tab.c"
+#line 2035 "y.tab.c"
     break;
 
   case 59:
-#line 243 "parser.y"
+#line 244 "parser.y"
                                             {   (yyval.node) = exprNode(ADD_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2040 "y.tab.c"
+#line 2041 "y.tab.c"
     break;
 
   case 60:
-#line 244 "parser.y"
+#line 245 "parser.y"
                                             {   (yyval.node) = exprNode(MUL_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2046 "y.tab.c"
+#line 2047 "y.tab.c"
     break;
 
   case 61:
-#line 245 "parser.y"
+#line 246 "parser.y"
                                             {   (yyval.node) = exprNode(DIV_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2052 "y.tab.c"
+#line 2053 "y.tab.c"
     break;
 
   case 62:
-#line 246 "parser.y"
+#line 247 "parser.y"
                                             {   (yyval.node) = exprNode(AND_NODE,(yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2058 "y.tab.c"
+#line 2059 "y.tab.c"
     break;
 
   case 63:
-#line 247 "parser.y"
+#line 248 "parser.y"
                                             {   (yyval.node) = exprNode(OR_NODE,(yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2064 "y.tab.c"
+#line 2065 "y.tab.c"
     break;
 
   case 64:
-#line 248 "parser.y"
+#line 249 "parser.y"
                                             {   (yyval.node) = exprNode(NOT_NODE,(yyvsp[0].node), NULL);}
-#line 2070 "y.tab.c"
+#line 2071 "y.tab.c"
     break;
 
   case 65:
-#line 249 "parser.y"
+#line 250 "parser.y"
                                             {   (yyval.node) = exprNode(LE_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2076 "y.tab.c"
+#line 2077 "y.tab.c"
     break;
 
   case 66:
-#line 250 "parser.y"
+#line 251 "parser.y"
                                             {   (yyval.node) = exprNode(LT_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2082 "y.tab.c"
+#line 2083 "y.tab.c"
     break;
 
   case 67:
-#line 251 "parser.y"
+#line 252 "parser.y"
                                             {   (yyval.node) = exprNode(GT_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2088 "y.tab.c"
+#line 2089 "y.tab.c"
     break;
 
   case 68:
-#line 252 "parser.y"
+#line 253 "parser.y"
                                             {   (yyval.node) = exprNode(GE_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2094 "y.tab.c"
+#line 2095 "y.tab.c"
     break;
 
   case 69:
-#line 253 "parser.y"
+#line 254 "parser.y"
                                             {   (yyval.node) = exprNode(EQ_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2100 "y.tab.c"
+#line 2101 "y.tab.c"
     break;
 
   case 70:
-#line 254 "parser.y"
+#line 255 "parser.y"
                                             {   (yyval.node) = exprNode(NE_NODE, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 2106 "y.tab.c"
+#line 2107 "y.tab.c"
     break;
 
   case 71:
-#line 255 "parser.y"
+#line 256 "parser.y"
                                             {   (yyval.node) = (yyvsp[-1].node) ;}
-#line 2112 "y.tab.c"
+#line 2113 "y.tab.c"
     break;
 
   case 72:
-#line 256 "parser.y"
-                                            {   (yyval.node) = createTreeNode((yyvsp[0].number),T_INT,NULL,NUM_NODE,NULL,NULL,NULL,NULL); }
-#line 2118 "y.tab.c"
+#line 257 "parser.y"
+                                            {   (yyval.node) = createTreeNode(0,(yyvsp[0].number),T_INT,NULL,NUM_NODE,NULL,NULL,NULL,NULL); }
+#line 2119 "y.tab.c"
     break;
 
   case 73:
-#line 257 "parser.y"
-                                            {   (yyval.node) = createTreeNode(NO_VAL,T_STR,(yyvsp[0].string),STR_NODE,NULL,NULL,NULL,NULL); }
-#line 2124 "y.tab.c"
+#line 258 "parser.y"
+                                            {   (yyval.node) = createTreeNode(0,NO_VAL,T_STR,(yyvsp[0].string),STR_NODE,NULL,NULL,NULL,NULL); }
+#line 2125 "y.tab.c"
     break;
 
   case 74:
-#line 258 "parser.y"
+#line 259 "parser.y"
                                             {   (yyval.node) = (yyvsp[0].node) ; }
-#line 2130 "y.tab.c"
+#line 2131 "y.tab.c"
     break;
 
   case 75:
-#line 259 "parser.y"
+#line 260 "parser.y"
                                             {   
                                                 (yyval.node) = funcNode(Ghead,(yyvsp[-2].node),NULL);
                                             }
-#line 2138 "y.tab.c"
+#line 2139 "y.tab.c"
     break;
 
   case 76:
-#line 262 "parser.y"
+#line 263 "parser.y"
                                             {   (yyval.node) = funcNode(Ghead,(yyvsp[-3].node),(yyvsp[-1].node));}
-#line 2144 "y.tab.c"
+#line 2145 "y.tab.c"
     break;
 
   case 77:
-#line 265 "parser.y"
+#line 266 "parser.y"
                                             {
                                                 (yyval.node) = appendArg((yyvsp[-2].node),(yyvsp[0].node));
                                             }
-#line 2152 "y.tab.c"
+#line 2153 "y.tab.c"
     break;
 
   case 78:
-#line 268 "parser.y"
+#line 269 "parser.y"
                                             {   
                                                 (yyval.node) = (yyvsp[0].node);
                                                 (yyval.node)->argList = NULL ;
                                             }
-#line 2161 "y.tab.c"
+#line 2162 "y.tab.c"
     break;
 
   case 79:
-#line 274 "parser.y"
+#line 275 "parser.y"
                                                 {   (yyval.node) = connectNode((yyvsp[-1].node),(yyvsp[0].node)); }
-#line 2167 "y.tab.c"
+#line 2168 "y.tab.c"
     break;
 
   case 80:
-#line 275 "parser.y"
+#line 276 "parser.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ; }
-#line 2173 "y.tab.c"
+#line 2174 "y.tab.c"
     break;
 
   case 81:
-#line 278 "parser.y"
+#line 279 "parser.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ; }
-#line 2179 "y.tab.c"
+#line 2180 "y.tab.c"
     break;
 
   case 82:
-#line 279 "parser.y"
+#line 280 "parser.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ; }
-#line 2185 "y.tab.c"
+#line 2186 "y.tab.c"
     break;
 
   case 83:
-#line 280 "parser.y"
+#line 281 "parser.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ; }
-#line 2191 "y.tab.c"
+#line 2192 "y.tab.c"
     break;
 
   case 84:
-#line 281 "parser.y"
+#line 282 "parser.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ; }
-#line 2197 "y.tab.c"
+#line 2198 "y.tab.c"
     break;
 
   case 85:
-#line 282 "parser.y"
+#line 283 "parser.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ; }
-#line 2203 "y.tab.c"
+#line 2204 "y.tab.c"
     break;
 
   case 86:
-#line 283 "parser.y"
+#line 284 "parser.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ; }
-#line 2209 "y.tab.c"
+#line 2210 "y.tab.c"
     break;
 
   case 87:
-#line 284 "parser.y"
+#line 285 "parser.y"
                                                 {   (yyval.node) = (yyvsp[0].node) ; }
-#line 2215 "y.tab.c"
+#line 2216 "y.tab.c"
     break;
 
   case 88:
-#line 285 "parser.y"
+#line 286 "parser.y"
                                                 {   (yyval.node) = flowControlNode(BREAK_NODE); }
-#line 2221 "y.tab.c"
+#line 2222 "y.tab.c"
     break;
 
   case 89:
-#line 286 "parser.y"
+#line 287 "parser.y"
                                                 {   (yyval.node) = flowControlNode(CONTINUE_NODE); }
-#line 2227 "y.tab.c"
+#line 2228 "y.tab.c"
     break;
 
   case 90:
-#line 287 "parser.y"
+#line 288 "parser.y"
                                                 {   (yyval.node) = exitNode(EXIT_NODE); }
-#line 2233 "y.tab.c"
+#line 2234 "y.tab.c"
     break;
 
   case 91:
-#line 290 "parser.y"
+#line 291 "parser.y"
                                                 {                                                       
                                                     currentFunc = find(Ghead, (yyvsp[-4].node)->varname);
                                                     checkDeclAndDefn(currentFunc,currentType);
@@ -2244,11 +2245,11 @@ yyreduce:
                                                     compareParamList(currentFunc,(yyvsp[-2].paramList)) ;
                                                     Lhead = createLSTFromParams((yyvsp[-2].paramList));
                                                 }
-#line 2248 "y.tab.c"
+#line 2249 "y.tab.c"
     break;
 
   case 92:
-#line 300 "parser.y"
+#line 301 "parser.y"
                                                 {
                                                     currentFunc->bodyAST = (yyvsp[-1].node) ;
                                                     currentFunc->Lentry = Lhead ;
@@ -2258,108 +2259,108 @@ yyreduce:
                                                     currentFunc = NULL ;
                                                     Lhead = NULL ;
                                                 }
-#line 2262 "y.tab.c"
+#line 2263 "y.tab.c"
     break;
 
   case 93:
-#line 311 "parser.y"
+#line 312 "parser.y"
                                                                                 {   
                                                                                     
                                                                                     (yyval.node) = ifelseNode(IF_NODE,(yyvsp[-7].node),(yyvsp[-4].node),(yyvsp[-2].node));
                                                                                 }
-#line 2271 "y.tab.c"
+#line 2272 "y.tab.c"
     break;
 
   case 94:
-#line 315 "parser.y"
+#line 316 "parser.y"
                                                                                 {
                                                                                     
                                                                                     (yyval.node) = ifelseNode(IF_NODE,(yyvsp[-5].node),(yyvsp[-2].node),NULL);
                                                                                 }
-#line 2280 "y.tab.c"
+#line 2281 "y.tab.c"
     break;
 
   case 95:
-#line 321 "parser.y"
+#line 322 "parser.y"
                                                                                 {
                                                                                     (yyval.node) = loopNode(WHILE_NODE,(yyvsp[-5].node),(yyvsp[-2].node));
                                                                                 }
-#line 2288 "y.tab.c"
+#line 2289 "y.tab.c"
     break;
 
   case 96:
-#line 326 "parser.y"
+#line 327 "parser.y"
                                                                                 {   (yyval.node) = loopNode(DOWHILE_NODE,(yyvsp[-2].node),(yyvsp[-5].node)); }
-#line 2294 "y.tab.c"
+#line 2295 "y.tab.c"
     break;
 
   case 97:
-#line 329 "parser.y"
+#line 330 "parser.y"
                                                                                 {   (yyval.node) = loopNode(REPEAT_NODE,(yyvsp[-2].node),(yyvsp[-5].node)); }
-#line 2300 "y.tab.c"
+#line 2301 "y.tab.c"
     break;
 
   case 98:
-#line 332 "parser.y"
+#line 333 "parser.y"
                                                                                 {   (yyval.node) = ipOpNode(READ_NODE,(yyvsp[-2].node)); }
-#line 2306 "y.tab.c"
+#line 2307 "y.tab.c"
     break;
 
   case 99:
-#line 335 "parser.y"
+#line 336 "parser.y"
                                                                                 {   (yyval.node) = ipOpNode(WRITE_NODE,(yyvsp[-2].node)); }
-#line 2312 "y.tab.c"
+#line 2313 "y.tab.c"
     break;
 
   case 100:
-#line 338 "parser.y"
+#line 339 "parser.y"
                                                                                 {   (yyval.node) = assignNode((yyvsp[-3].node),(yyvsp[-1].node)); }
-#line 2318 "y.tab.c"
+#line 2319 "y.tab.c"
     break;
 
   case 101:
-#line 341 "parser.y"
+#line 342 "parser.y"
                                                                                 {   
                                                                                     struct tnode * node = setTypeId(Ghead,Lhead,(yyvsp[0].node),NULL,NULL);
                                                                                     node->nodetype = ID_NODE ;
                                                                                     (yyval.node) = node;
                                                                                 }
-#line 2328 "y.tab.c"
+#line 2329 "y.tab.c"
     break;
 
   case 102:
-#line 346 "parser.y"
+#line 347 "parser.y"
                                                                                 {   
                                                                                     struct tnode * node = setTypeId(Ghead,Lhead,(yyvsp[-3].node),(yyvsp[-1].node),NULL);
                                                                                     node->nodetype = ARR_NODE ;
                                                                                     (yyval.node) = node;
                                                                                 }
-#line 2338 "y.tab.c"
+#line 2339 "y.tab.c"
     break;
 
   case 103:
-#line 351 "parser.y"
+#line 352 "parser.y"
                                                                                 {
                                                                                     struct tnode * node = setTypeId(Ghead,Lhead,(yyvsp[0].node),NULL,NULL);
                                                                                     printf("%s\n",node->varname);
                                                                                     node->nodetype = ID_NODE;                              
                                                                                     (yyval.node) = pointerNode(Ghead,DEREF_NODE,node,NULL,NULL);
                                                                                 }
-#line 2349 "y.tab.c"
+#line 2350 "y.tab.c"
     break;
 
   case 104:
-#line 357 "parser.y"
+#line 358 "parser.y"
                                                                                 {
                                                                                     struct tnode * node = setTypeId(Ghead,Lhead,(yyvsp[0].node),NULL,NULL);
                                                                                     node->nodetype = ID_NODE ;
                                                                                     (yyval.node) = pointerNode(Ghead,ADDR_NODE,node,NULL,NULL);
                                                                                 }
-#line 2359 "y.tab.c"
+#line 2360 "y.tab.c"
     break;
 
   case 105:
-#line 362 "parser.y"
+#line 363 "parser.y"
                                                                                 {
                                                                                     if ((yyvsp[-2].node)->type->fields == NULL) {
                                                                                         yyerror("Field access ('.') on a non-tuple type");
@@ -2371,13 +2372,13 @@ yyreduce:
                                                                                         printf("Field '%s' not found in tuple type '%s'", (yyvsp[0].node)->varname, (yyvsp[-2].node)->type->name);                                                                                   
                                                                                         exit(1);
                                                                                     }
-                                                                                    (yyval.node) = createTreeNode(field->fieldIndex, field->type, field->name, FIELD_NODE, NULL, (yyvsp[-2].node), NULL, NULL);
+                                                                                    (yyval.node) = createTreeNode(0,field->fieldIndex, field->type, field->name, FIELD_NODE, NULL, (yyvsp[-2].node), NULL, NULL);
                                                                                 }
-#line 2377 "y.tab.c"
+#line 2378 "y.tab.c"
     break;
 
 
-#line 2381 "y.tab.c"
+#line 2382 "y.tab.c"
 
       default: break;
     }
@@ -2609,7 +2610,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 377 "parser.y"
+#line 378 "parser.y"
 
 
 int yyerror(const char *s) {

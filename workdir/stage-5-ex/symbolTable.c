@@ -2,6 +2,7 @@
 #include "exptree.h"
 #include "TypeTable.h"
 
+
 int bindAddress = STACK_BASE ;
 int localBinding = -1;
 
@@ -14,31 +15,41 @@ struct Lsymbol * createLSTFromParams(struct ParamStruct * paramList) {
     int bindingOffset = -3 ;
 
     while(temp) {
-        Lhead = insertToLocalTable(Lhead,temp->name,temp->type);
+        int paramSize ;
 
-        struct Lsymbol * newEntry = findLocalSymbol(Lhead,temp->name);
+        if(temp->isPtr == 1) {
+            paramSize = 1 ;
+        } else {
+            paramSize = temp->type->size ;
+        }
+
+        Lhead = insertToLocalTable(Lhead, temp->name, temp->type, temp->isPtr, paramSize);
+
+        struct Lsymbol * newEntry = findLocalSymbol(Lhead, temp->name);
+
         if(newEntry != NULL) {
-            newEntry->binding = bindingOffset - count + i;
+            newEntry->binding = bindingOffset + count - i ;
         }
         temp = temp->next ;
         i++ ;
     }
     localBinding = 1;
-    return Lhead; 
+    return Lhead ;
 }
 
-struct ParamStruct * createParamStructNode(char * name, struct TypeTable * type) {
+struct ParamStruct * createParamStructNode(char * name, struct TypeTable * type,bool isPtr) {
     struct ParamStruct * node = (struct ParamStruct *) malloc(sizeof(struct ParamStruct));
 
     node->name = name ;
     node->type = type ;
+    node->isPtr = isPtr ;
     node->next = NULL ;
 
     return node ;
 }
 
-struct ParamStruct * insertToParamList(struct ParamStruct * head,char * name, struct TypeTable * type ) {
-    struct ParamStruct * node = createParamStructNode(name,type);
+struct ParamStruct * insertToParamList(struct ParamStruct * head,char * name, struct TypeTable * type, bool isPtr ) {
+    struct ParamStruct * node = createParamStructNode(name,type,isPtr);
 
     struct ParamStruct * temp = head ;
     if(temp == NULL) {
@@ -66,27 +77,30 @@ struct ParamStruct * findinParamList(struct ParamStruct * head, char * name) {
     return NULL ;
 }
 
-struct Gsymbol* createSymbolNode(char* name, struct TypeTable * type, int size1, int flabel) {
+struct Gsymbol* createSymbolNode(char* name, struct TypeTable * type,bool isPtr, int size1, int flabel) {
     struct Gsymbol * node = (struct Gsymbol *) malloc(sizeof(struct Gsymbol));
 
     node->name = name ;
     node->type = type ;
     node->size1 = size1 ;
     node->next = NULL ;
+    node->isPtr = isPtr ;
     node->binding = bindAddress ;
     bindAddress += size1 ;
     node->flabel = flabel ;
     return node ;
 }
 
-struct Lsymbol *createLocalSymbolNode(char * name ,struct TypeTable * type) {
+struct Lsymbol *createLocalSymbolNode(char * name ,struct TypeTable * type, bool isPtr,int size) {
     struct Lsymbol * node = (struct Lsymbol *) malloc(sizeof(struct Lsymbol));
 
     node->name = name ;
     node->type = type ;
     node->next = NULL ;
+    node->isPtr = isPtr ;
+    node->size = size ;
     node->binding = localBinding;
-    localBinding++ ;
+    localBinding += size ;
     return node ;
 }
 
@@ -120,14 +134,14 @@ struct Gsymbol * find(struct Gsymbol * head, char * name) {
     return NULL ;
 }
 
-struct Lsymbol * insertToLocalTable(struct Lsymbol * head, char * name, struct TypeTable * type) {
+struct Lsymbol * insertToLocalTable(struct Lsymbol * head, char * name, struct TypeTable * type, bool isPtr,int size) {
     if(findLocalSymbol(head,name) != NULL) {
         printf("Redeclaration of variable of variable %s\n",name);
         exit(1);
     }
 
     struct Lsymbol * temp = head ;
-    struct Lsymbol * node = createLocalSymbolNode(name,type);
+    struct Lsymbol * node = createLocalSymbolNode(name,type,isPtr,size);
 
     if(temp == NULL) {
         head = node ;
@@ -141,14 +155,14 @@ struct Lsymbol * insertToLocalTable(struct Lsymbol * head, char * name, struct T
     return head ;
 }
 
-struct Gsymbol * insertTable(struct Gsymbol * head,char * name, struct TypeTable * type, int size1,int flabel) {
+struct Gsymbol * insertTable(struct Gsymbol * head,char * name, struct TypeTable * type,bool isPtr, int size1,int flabel) {
     if(find(head,name) != NULL) {
         printf("Redeclaration of variable of global variable %s\n",name);
         exit(1);
     } 
 
     struct Gsymbol * temp = head ;
-    struct Gsymbol * node = createSymbolNode(name,type,size1,flabel); 
+    struct Gsymbol * node = createSymbolNode(name,type,isPtr,size1,flabel); 
 
     if(temp == NULL) {
         head = node ;
@@ -166,7 +180,11 @@ void printSymbolTable(struct Gsymbol * head) {
     struct Gsymbol * node = head ;
 
     while(node) {
-        printf("Name: %s, Address: %d, Type: %s\n",node->name,node->binding,node->type->name);
+        printf("Name: %s, Type: %s%s, Size: %d\n",
+               node->name,
+               node->type->name,
+               node->isPtr ? "*" : "", 
+               node->size1);
         node = node->next ;
     }
 }
@@ -183,11 +201,14 @@ int countParameterList(struct ParamStruct * paramlist) {
 }
 
 void printLocalSymbolTable(struct Lsymbol * head) {
-    struct Lsymbol * temp = head ;
+    struct Lsymbol * node = head ;
 
-    while(temp) {
-        printf("Name: %s, Type: %s, Binding: %d\n",temp->name, temp->type->name,temp->binding);
-        temp = temp->next ;
+    while(node) {
+        printf("Name: %s, Type: %s%s ",
+               node->name,
+               node->type->name,
+               node->isPtr ? "*" : "");
+        node = node->next ;
     }
 }
 
@@ -213,7 +234,19 @@ void compareParamList(struct Gsymbol * currentFunc,struct ParamStruct * currPara
     struct ParamStruct * temp = currentFunc->paramList ;
     struct ParamStruct * compare = currParamList ;
 
-    
+    while(temp != NULL && compare != NULL ) {
+        if((strcmp(temp->name,compare->name) != 0) || 
+           (temp->type != compare->type) ||            // <--- Check Type
+           (temp->isPtr != compare->isPtr)) {  // <--- Check Flag
+            printf("Type/Name/Pointer mismatch in parameter...\n");
+            exit(1);
+        }
+        temp = temp->next ;
+        compare = compare->next ;
+    }
+    temp = currentFunc->paramList ;
+    compare = currParamList ;
+
     while(temp != NULL && compare != NULL ) {
         if((strcmp(temp->name,compare->name) != 0) || (strcmp(temp->type->name,compare->type->name)!= 0)) {
             printf("Type/Name mismatch in parameter for function definition\n");

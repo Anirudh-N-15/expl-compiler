@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 enum nodetype {
     NUM_NODE        = 0,
@@ -81,6 +82,7 @@ typedef struct tnode {
     int val;                      // value of a number for NUM nodes.
     char * varname;               // name of a variable for ID nodes
     int nodetype;                 // information about non-leaf nodes - read/write/connector/+/* etc.
+    bool isPtr ;                  // flag to check whether variable is a pointer or not
     struct TypeTable * type ;     // pointer to the Typetable entry of variable type
     struct Gsymbol * Gentry ;     // pointer to GST entry for global variables and functions
     struct Lsymbol * Lentry ;     // pointer to LST entry for local variables and functions
@@ -88,7 +90,7 @@ typedef struct tnode {
     struct tnode * left, *right, *mid ;
 }tnode;
 
-struct tnode * createTreeNode(int val, struct TypeTable * type, char* varname, int nodetype, struct Gsymbol * Gentry ,struct tnode *l,struct tnode * m, struct tnode *r);
+struct tnode * createTreeNode(int isPtr,int val, struct TypeTable * type, char* varname, int nodetype, struct Gsymbol * Gentry ,struct tnode *l,struct tnode * m, struct tnode *r);
 struct tnode * connectNode(struct tnode * left, struct tnode * right);
 struct tnode * ipOpNode(int nodetype ,struct tnode * left);
 struct tnode * loopNode(int nodetype , struct tnode * left, struct tnode * right);

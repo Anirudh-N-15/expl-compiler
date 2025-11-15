@@ -67,14 +67,14 @@ void popLabel() {
 int countLocalVariables(struct Lsymbol * Lhead) {
     struct Lsymbol * temp = Lhead ;
 
-    int count = 0;
+    int totalSize = 0;
     while(temp) {
         if(temp->binding > 0) {
-            count++ ;
+            totalSize += temp->size ;
         }
         temp = temp->next ;
     }
-    return count ;
+    return totalSize ;
 }
 
 
@@ -112,6 +112,10 @@ int getAddress(struct tnode * root,FILE * op) {
         }
         case FIELD_NODE : {
             int baseReg = getAddress(root->left,op);
+
+            if(root->left->isPtr == true) {
+                fprintf(op, "MOV R%d, [R%d]\n", baseReg, baseReg);
+            }
 
             fprintf(op, "ADD R%d, %d\n",baseReg,root->val);
 
@@ -385,7 +389,7 @@ int codeGen(struct tnode * root, FILE * op) {
             return -1;
         }
         case ASSIGN_NODE :{                                 // ex assignment a = b
-            if(root->left->type->fields != NULL) {
+            if(root->left->type->fields != NULL && root->left->isPtr == 0) {
                 int size = root->left->type->size; 
                 int destReg = getAddress(root->left, op);  // Get address of 'a'
                 int srcReg = getAddress(root->right, op); // Get address of 'b'

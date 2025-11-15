@@ -1051,7 +1051,7 @@ case 48:
 YY_RULE_SETUP
 #line 75 "lexer.l"
 {
-                yylval.node = createTreeNode(NO_VAL,T_VOID,strdup(yytext),ID_NODE,NULL,NULL,NULL,NULL);
+                yylval.node = createTreeNode(0,NO_VAL,T_VOID,strdup(yytext),ID_NODE,NULL,NULL,NULL,NULL);
                 return ID ;
             }
 	YY_BREAK

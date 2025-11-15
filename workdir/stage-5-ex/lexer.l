@@ -72,7 +72,7 @@ id          {letter}({letter}|{digit})*
 "\n"        { yylineNum++ ;}
 [ \t]     {}
 {id}        {
-                yylval.node = createTreeNode(NO_VAL,T_VOID,strdup(yytext),ID_NODE,NULL,NULL,NULL,NULL);
+                yylval.node = createTreeNode(0,NO_VAL,T_VOID,strdup(yytext),ID_NODE,NULL,NULL,NULL,NULL);
                 return ID ;
             }
 

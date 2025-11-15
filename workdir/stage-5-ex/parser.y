@@ -13,6 +13,7 @@
     extern int yylineNum; 
     extern int localBinding ;
     int flabel = 1;
+    bool isPointer = false ;
 
     struct Gsymbol * Ghead  = NULL ;
     struct Lsymbol * Lhead  = NULL ; 
@@ -69,7 +70,7 @@ program     :   GDeclBlock FDefBlock MainBlock  {}
             ;
 
 MainBlock   :   INT MAIN '(' ')' '{'            {   
-                                                    Ghead = insertTable(Ghead,"F0",T_INT,0,0); 
+                                                    Ghead = insertTable(Ghead,"F0",T_INT,false,0,0); 
                                                     currentFunc = find(Ghead, "F0");
                                                     if(currentFunc == NULL) {
                                                         printf("Error: Function '%s' not found in symbol table\n", "main");
@@ -122,8 +123,8 @@ GTupleIdList:  GTupleIdList ',' GTupleId       {}
             |  GTupleId                        {}
             ;
 
-GTupleId    :   ID                          {    Ghead = insertTable(Ghead, ($1)->varname, currTupleType, currTupleType->size, -1);}
-            |   STAR ID                     {    /*Ghead = insertTable(Ghead, ($2)->varname, currTupleType, currTupleType->size, -1);*/}
+GTupleId    :   ID                          {    Ghead = insertTable(Ghead, ($1)->varname, currTupleType, false, currTupleType->size, -1);}
+            |   STAR ID                     {    Ghead = insertTable(Ghead, ($2)->varname, currTupleType, true, currTupleType->size, -1);}
             ;
 
 FieldDefList:   FieldDefList ',' FieldDef   {   
@@ -148,13 +149,13 @@ GidList     :   GidList ',' Gid             {}
             |   Gid                         {}
             ;
 
-Gid         :   ID                          {   Ghead = insertTable(Ghead,($1)->varname,currentType,1,-1); }
-            |   ID '[' NUM ']'              {   Ghead = insertTable(Ghead,($1)->varname,currentType,$3,-1);}
+Gid         :   ID                          {   Ghead = insertTable(Ghead,($1)->varname,currentType,false,1,-1); }
+            |   ID '[' NUM ']'              {   Ghead = insertTable(Ghead,($1)->varname,currentType,false,$3,-1);}
             |   ID '(' ParamList ')'        {   
-                                                Ghead = insertTable(Ghead,($1)->varname,currentType,0,flabel++);
+                                                Ghead = insertTable(Ghead,($1)->varname,currentType,false,0,flabel++);
                                                 insertParamListToGST(Ghead,($1)->varname,$3);
                                             }
-            |   STAR ID                     {   Ghead = insertTable(Ghead,($2)->varname,currentType == T_INT ? T_INT_PTR : T_STR_PTR,1,-1); }
+            |   STAR ID                     {   Ghead = insertTable(Ghead,($2)->varname,currentType == T_INT ? T_INT_PTR : T_STR_PTR,true,1,-1); }
             ;
 
 FDefBlock   :   FDefBlock Fdef              {}
@@ -170,13 +171,13 @@ Body        :   BEG stmtList Ret END SEMICOLON  {
                                                 }
             ;
 
-ParamList   :   ParamList ',' Param         {   $$ = insertToParamList($1,($3)->name,($3)->type) ; }
-            |   Param                       {   $$ = insertToParamList(NULL,($1)->name,($1)->type) ;}
+ParamList   :   ParamList ',' Param         {   $$ = insertToParamList($1,($3)->name,($3)->type,($3)->isPtr) ; }
+            |   Param                       {   $$ = insertToParamList(NULL,($1)->name,($1)->type,($1)->isPtr) ;}
             |                               {   $$ = NULL ;}
             ;
 
-Param       :   ParType ID                  {   $$ = createParamStructNode(strdup($2->varname),paramType); }
-            |   ParType STAR ID             {   $$ = createParamStructNode(strdup($3->varname),paramType == T_INT ? T_INT_PTR : T_STR_PTR); }
+Param       :   ParType ID                  {   $$ = createParamStructNode(strdup($2->varname),paramType,false); }
+            |   ParType STAR ID             {   $$ = createParamStructNode(strdup($3->varname),paramType == T_INT ? T_INT_PTR : T_STR_PTR,true); }
             ;
 
 Ret         :   RETURN EXPR SEMICOLON       {   
@@ -217,13 +218,13 @@ LTupleIdList:   LTupleIdList ',' LTupleId       {}
             |   LTupleId                        {}
             ;
 
-LTupleId    :   ID                          {    Lhead = insertToLocalTable(Lhead, ($1)->varname, currTupleType);}
-            |   STAR ID                     {   }
+LTupleId    :   ID                          {   Lhead = insertToLocalTable(Lhead, ($1)->varname, currTupleType,false,currTupleType->size);}
+            |   STAR ID                     {   Lhead = insertToLocalTable(Lhead, ($2)->varname, currTupleType,true,1);}
             ;
 
 
-IdList      :   IdList ',' ID               {   Lhead = insertToLocalTable(Lhead,($3)->varname,currLocalType);}
-            |   ID                          {   Lhead = insertToLocalTable(Lhead,($1)->varname,currLocalType);}
+IdList      :   IdList ',' ID               {   Lhead = insertToLocalTable(Lhead,($3)->varname,currLocalType,false,1);}
+            |   ID                          {   Lhead = insertToLocalTable(Lhead,($1)->varname,currLocalType,false,1);}
             ;
 
 GType       :   INT                         {   currentType = T_INT ;}
@@ -253,8 +254,8 @@ EXPR        :   EXPR MINUS EXPR             {   $$ = exprNode(MINUS_NODE, $1, $3
             |   EXPR EQ    EXPR             {   $$ = exprNode(EQ_NODE, $1, $3); }
             |   EXPR NE    EXPR             {   $$ = exprNode(NE_NODE, $1, $3); }
             |   '(' EXPR ')'                {   $$ = $2 ;}
-            |   NUM                         {   $$ = createTreeNode($<number>1,T_INT,NULL,NUM_NODE,NULL,NULL,NULL,NULL); }
-            |   STR_LITERAL                 {   $$ = createTreeNode(NO_VAL,T_STR,$<string>1,STR_NODE,NULL,NULL,NULL,NULL); }
+            |   NUM                         {   $$ = createTreeNode(0,$<number>1,T_INT,NULL,NUM_NODE,NULL,NULL,NULL,NULL); }
+            |   STR_LITERAL                 {   $$ = createTreeNode(0,NO_VAL,T_STR,$<string>1,STR_NODE,NULL,NULL,NULL,NULL); }
             |   IDENTIFIERS                 {   $$ = $1 ; }
             |   ID '(' ')'                  {   
                                                 $$ = funcNode(Ghead,$1,NULL);
@@ -370,7 +371,7 @@ IDENTIFIERS :   ID                                                              
                                                                                         printf("Field '%s' not found in tuple type '%s'", $3->varname, $1->type->name);                                                                                   
                                                                                         exit(1);
                                                                                     }
-                                                                                    $$ = createTreeNode(field->fieldIndex, field->type, field->name, FIELD_NODE, NULL, $1, NULL, NULL);
+                                                                                    $$ = createTreeNode(0,field->fieldIndex, field->type, field->name, FIELD_NODE, NULL, $1, NULL, NULL);
                                                                                 }                                                              
             ;
 

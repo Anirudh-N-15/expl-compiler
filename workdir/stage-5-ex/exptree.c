@@ -2,13 +2,14 @@
 #include "symbolTable.h"
 #include "TypeTable.h"
 
-struct tnode * createTreeNode(int val, struct TypeTable * type, char* varname, int nodetype, struct Gsymbol * Gentry,struct tnode *l, struct tnode * m,struct tnode *r) {
+struct tnode * createTreeNode(int isPtr,int val, struct TypeTable * type, char* varname, int nodetype, struct Gsymbol * Gentry,struct tnode *l, struct tnode * m,struct tnode *r) {
     struct tnode * temp = (struct tnode * ) malloc(sizeof(struct tnode));
 
     temp->left = l ;
     temp->right = r ;
     temp->mid = m ;
 
+    temp->isPtr = isPtr ;
     temp->Gentry = Gentry ;
     temp->type = type ;
     temp->nodetype = nodetype ;
@@ -21,22 +22,22 @@ struct tnode * createTreeNode(int val, struct TypeTable * type, char* varname, i
 
 struct tnode * connectNode(struct tnode * left, struct tnode * right) {
 
-    return createTreeNode(NO_VAL,T_VOID,NULL,CONNECT_NODE,NULL,left,NULL,right);
+    return createTreeNode(0,NO_VAL,T_VOID,NULL,CONNECT_NODE,NULL,left,NULL,right);
 }
 
 struct tnode * ipOpNode(int nodetype ,struct tnode * left) {
     //Will only have left side ID present since its read or write node
-    return createTreeNode(NO_VAL,T_VOID,NULL,nodetype,NULL,left,NULL,NULL);
+    return createTreeNode(0,NO_VAL,T_VOID,NULL,nodetype,NULL,left,NULL,NULL);
 }
 
 struct tnode * loopNode(int nodetype, struct tnode * left, struct tnode * right) {
 
-    return createTreeNode(NO_VAL,T_VOID,NULL,nodetype,NULL,left,NULL,right);
+    return createTreeNode(0,NO_VAL,T_VOID,NULL,nodetype,NULL,left,NULL,right);
 }
 
 struct tnode * flowControlNode(int nodetype) {
     //Continue and Break Stmt node
-    return createTreeNode(NO_VAL,T_VOID,NULL,nodetype,NULL,NULL,NULL,NULL);
+    return createTreeNode(0,NO_VAL,T_VOID,NULL,nodetype,NULL,NULL,NULL,NULL);
 }
 
 int isArithmeticOp(int nodeType) {
@@ -69,7 +70,7 @@ struct tnode * exprNode(int nodeType, struct tnode * left , struct tnode * right
             printf("Type Mismatch: Logical operators (AND, OR) require boolean operands\n");
             exit(1);
         }
-        return createTreeNode(NO_VAL, T_BOOL, NULL, nodeType, NULL, left, NULL, right);
+        return createTreeNode(0,NO_VAL, T_BOOL, NULL, nodeType, NULL, left, NULL, right);
     }
 
     if(isArithmeticOp(nodeType)) {
@@ -77,7 +78,7 @@ struct tnode * exprNode(int nodeType, struct tnode * left , struct tnode * right
             printf("Type Mismatch: Arithmetic operators require integer operands\n");
             exit(1);
         }
-        return createTreeNode(NO_VAL, T_INT, NULL, nodeType, NULL, left, NULL, right);
+        return createTreeNode(0,NO_VAL, T_INT, NULL, nodeType, NULL, left, NULL, right);
     }
 
     if(isRelop(nodeType)) {
@@ -99,7 +100,7 @@ struct tnode * exprNode(int nodeType, struct tnode * left , struct tnode * right
         }
         
         // If we survived the checks, the types are compatible
-        return createTreeNode(NO_VAL, T_BOOL, NULL, nodeType, NULL, left, NULL, right);
+        return createTreeNode(0,NO_VAL, T_BOOL, NULL, nodeType, NULL, left, NULL, right);
     }
 
     printf("Unknown Expression in exprNode\n");
@@ -134,15 +135,15 @@ struct tnode * assignNode(struct tnode * left, struct tnode * right) {
             }
         }
     }
-    return createTreeNode(NO_VAL,T_VOID,NULL,ASSIGN_NODE,NULL,left,NULL,right);
+    return createTreeNode(0,NO_VAL,T_VOID,NULL,ASSIGN_NODE,NULL,left,NULL,right);
 }
 
 struct tnode * exitNode(int nodeType) {
-    return createTreeNode(NO_VAL,T_VOID,NULL,EXIT_NODE,NULL,NULL,NULL,NULL);
+    return createTreeNode(0,NO_VAL,T_VOID,NULL,EXIT_NODE,NULL,NULL,NULL,NULL);
 }
 
 struct tnode * ifelseNode(int nodeType ,struct tnode * left, struct tnode * mid ,struct tnode * right) {
-    return  createTreeNode(NO_VAL,T_VOID,NULL,nodeType,NULL,left,mid,right);
+    return  createTreeNode(0,NO_VAL,T_VOID,NULL,nodeType,NULL,left,mid,right);
 }
 
 struct tnode * setTypeId(struct Gsymbol * Ghead ,struct Lsymbol * Lhead ,struct tnode * idNode,struct tnode * leftExprNode, struct tnode * rightExprNode) {
@@ -154,6 +155,7 @@ struct tnode * setTypeId(struct Gsymbol * Ghead ,struct Lsymbol * Lhead ,struct 
         idNode->right = rightExprNode ;
         idNode->type = Ltemp->type ;
         idNode->Lentry = Ltemp ;
+        idNode->isPtr = Ltemp->isPtr ;
         return idNode ;
     }
     struct Gsymbol * Gtemp = find(Ghead , idNode->varname) ;
@@ -168,6 +170,7 @@ struct tnode * setTypeId(struct Gsymbol * Ghead ,struct Lsymbol * Lhead ,struct 
     idNode->right = rightExprNode ;
     idNode->type = Gtemp->type ;
     idNode->Gentry = Gtemp ;
+    idNode->isPtr = Gtemp->isPtr ;
 
     return idNode ;
 }
@@ -175,56 +178,86 @@ struct tnode * setTypeId(struct Gsymbol * Ghead ,struct Lsymbol * Lhead ,struct 
 struct tnode * pointerNode(struct Gsymbol * head,int nodeType,struct tnode * node, struct tnode * left, struct tnode * right) {
     struct Gsymbol * symbolNode = find(head, node->varname);
 
-    struct tnode * temp = createTreeNode(NO_VAL,T_VOID,NULL,nodeType,symbolNode,NULL,NULL,NULL);
+    struct tnode * temp; // This will be the & or * node
     
-    if(node->Lentry != NULL) {
-        if(nodeType == DEREF_NODE) {
-            if(node->Lentry->type == T_INT_PTR) {
-                temp->type = T_INT;
-                node->type = T_INT_PTR ;
-            } else {
-                temp->type = T_STR ;
-                node->type = T_STR_PTR ;
-            }
-        } else if(nodeType == ADDR_NODE) {
-            if(node->Lentry->type == T_INT) {
-                temp->type = T_INT_PTR ;
-                node->type = T_INT ;
-            } else {
-                temp->type = T_STR_PTR ;
-                node->type = T_STR ;
-            }
+    if (nodeType == DEREF_NODE) { // *ptr
+        if (node->isPtr == 0) {
+            printf("Error: Cannot dereference a non-pointer variable '%s'\n", node->varname);
+            exit(1);
         }
-        temp->left = node ;
-
-        return temp ;
-
-    } else if(node->Gentry != NULL){
-        if(nodeType == DEREF_NODE) {
-            if(node->Gentry->type == T_INT_PTR) {
-                temp->type = T_INT;
-                node->type = T_INT_PTR ;
-            } else {
-                temp->type = T_STR ;
-                node->type = T_STR_PTR ;
-            }
-        } else if(nodeType == ADDR_NODE) {
-            if(node->Gentry->type == T_INT) {
-                temp->type = T_INT_PTR ;
-                node->type = T_INT ;
-            } else {
-                temp->type = T_STR_PTR ;
-                node->type = T_STR ;
-            }
+        // The result *ptr is NOT a pointer
+        temp = createTreeNode(0,NO_VAL, node->type,node->varname, DEREF_NODE,symbolNode,NULL,NULL,NULL);
+    } 
+    else if (nodeType == ADDR_NODE) { // &var
+        if (node->isPtr == 1) {
+            printf("Error: Cannot take the address of a pointer '%s'\n", node->varname);
+            exit(1);
         }
-        temp->left = node ;
-
-        return temp ;
+        // The result &var IS a pointer
+        temp = createTreeNode(1,NO_VAL, node->type,node->varname ,ADDR_NODE,symbolNode,NULL,NULL,NULL);
     }
-    return NULL ;
+    
+    temp->left = node;
+    return temp;
+    
+    // struct Gsymbol * symbolNode = find(head, node->varname);
+
+    // struct tnode * temp = createTreeNode(NO_VAL,T_VOID,NULL,nodeType,symbolNode,NULL,NULL,NULL);
+    
+    // if(node->Lentry != NULL) {
+    //     if(nodeType == DEREF_NODE) {
+    //         if(node->Lentry->type == T_INT_PTR) {
+    //             temp->type = T_INT;
+    //             node->type = T_INT_PTR ;
+    //         } else {
+    //             temp->type = T_STR ;
+    //             node->type = T_STR_PTR ;
+    //         }
+    //     } else if(nodeType == ADDR_NODE) {
+    //         if(node->Lentry->type == T_INT) {
+    //             temp->type = T_INT_PTR ;
+    //             node->type = T_INT ;
+    //         } else {
+    //             temp->type = T_STR_PTR ;
+    //             node->type = T_STR ;
+    //         }
+    //     }
+    //     temp->left = node ;
+
+    //     return temp ;
+
+    // } else if(node->Gentry != NULL){
+    //     if(nodeType == DEREF_NODE) {
+    //         if(node->Gentry->type == T_INT_PTR) {
+    //             temp->type = T_INT;
+    //             node->type = T_INT_PTR ;
+    //         } else {
+    //             temp->type = T_STR ;
+    //             node->type = T_STR_PTR ;
+    //         }
+    //     } else if(nodeType == ADDR_NODE) {
+    //         if(node->Gentry->type == T_INT) {
+    //             temp->type = T_INT_PTR ;
+    //             node->type = T_INT ;
+    //         } else {
+    //             temp->type = T_STR_PTR ;
+    //             node->type = T_STR ;
+    //         }
+    //     }
+    //     temp->left = node ;
+
+    //     return temp ;
+    // }
+    // return NULL ;
 }
 
 struct tnode * returnNode(struct Gsymbol * funcEntry, int nodetype, struct tnode * node) {
+
+    if (node->type->fields != NULL) {
+        printf("Tuples cannot be returned from functions");
+        exit(1);
+    }
+
     if(funcEntry == NULL) {
         printf("Error: Return statement outside function\n");
         exit(1) ;
@@ -236,7 +269,7 @@ struct tnode * returnNode(struct Gsymbol * funcEntry, int nodetype, struct tnode
         exit(1);
     }
     
-    return createTreeNode(NO_VAL,node->type,NULL,RETURN_NODE,funcEntry,node,NULL,NULL);
+    return createTreeNode(0,NO_VAL,node->type,NULL,RETURN_NODE,funcEntry,node,NULL,NULL);
 }
 
 struct tnode * funcNode(struct Gsymbol * Ghead ,struct tnode * node, struct tnode * arglist) {
@@ -249,11 +282,15 @@ struct tnode * funcNode(struct Gsymbol * Ghead ,struct tnode * node, struct tnod
     }
 
     struct ParamStruct * paramHead = funcEntry->paramList ;
-
     struct tnode * argHead = arglist ;
 
-    // Type check arguments against parameters
+    // Type check arguments against parameters and also tuples to functions
     while(argHead != NULL &&  paramHead != NULL) {
+        if (argHead->type->fields != NULL) {
+            printf("Tuples cannot be passed as arguments to functions");
+            exit(1);
+        }
+
         if(argHead->type != paramHead->type ) {
             printf("Type mismatch for argument '%s' in function call to '%s'\n",argHead->varname,paramHead->name);
             exit(1);
@@ -272,7 +309,7 @@ struct tnode * funcNode(struct Gsymbol * Ghead ,struct tnode * node, struct tnod
         exit(1);
     }
 
-    struct tnode * callNode =  createTreeNode(NO_VAL,funcEntry->type,funcEntry->name,FUNC_CALL_NODE,funcEntry,NULL,NULL,NULL);
+    struct tnode * callNode =  createTreeNode(0,NO_VAL,funcEntry->type,funcEntry->name,FUNC_CALL_NODE,funcEntry,NULL,NULL,NULL);
 
     node->argList = arglist ;
     callNode->left = node ;
@@ -307,5 +344,5 @@ struct tnode * fieldNode(struct Fieldlist * field,int fieldIndex, struct TypeTab
         printf("Field '%s' not found in tuple type '%s'", field->name, field->type->name);
         exit(1);
     }
-    return createTreeNode(fieldIndex, type, name, nodetype, NULL, NULL, NULL, rightExprNode);
+    return createTreeNode(0,fieldIndex, type, name, nodetype, NULL, NULL, NULL, rightExprNode);
 }

@@ -1,30 +1,39 @@
 decl
-    tuple student (str name, int rollno, int age) s1, s2;
-    tuple faculty (str name, int id) f1;
+tuple student (str name, int rollno, int age) s1, s2, *sptr ;
+tuple faculty (str name, int id) f1;
 enddecl
 
 int main() {
 decl
-    tuple course (str code, int credits) c1;
+    tuple course (str code, int credits) c1, *cptr ;
 enddecl
+
 begin
+    write("--- Global Tests ---");
+
     read(s1.name);
     read(s1.rollno);
-    read(s1.age);
+
+    sptr = &s1;
+
+    write(sptr.name);
+    write(sptr.rollno); 
+
+    write("--- Local Tests ---");
 
     read(c1.code);
     read(c1.credits);
 
-    write("Local tuple data:");
-    write(c1.code);
-    write(c1.credits);
+    cptr = &c1;
+
+    write(cptr.code);
+    write(cptr.credits); 
 
     s2 = s1;
-
-    write("Assigned global tuple data:");
     write(s2.name);
-    write(s2.rollno);
-    
-    return 0;
+
+return 0;
+
+
 end;
 }
